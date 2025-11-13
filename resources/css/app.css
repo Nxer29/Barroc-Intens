@@ -1,13 +1,5 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-=======
-/* @import "@fontsource/roboto";
-@import "@fontsource/big-shoulders-display"; */
->>>>>>> Stashed changes
-=======
-/* @import "@fontsource/roboto";
-@import "@fontsource/big-shoulders-display"; */
->>>>>>> Stashed changes
+@import "@fontsource/roboto";
+@import "@fontsource/big-shoulders-display";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
