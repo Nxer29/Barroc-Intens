@@ -19,9 +19,10 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
 
-        User::factory()->create([
-            'name' => 'Test User',
+        $Admin = User::create([
+            'name' => 'Admin',
             'email' => 'test@example.com',
+            'password' => bcrypt('secret'),
         ]);
 
 
@@ -32,5 +33,8 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'sales']);
         Role::create(['name' => 'inkoop']);
         Role::create(['name' => 'maintenance']);
+
+
+        $Admin->assignRole('Admin');
     }
 }
