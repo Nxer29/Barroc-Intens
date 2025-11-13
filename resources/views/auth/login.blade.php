@@ -1,47 +1,33 @@
-<x-guest-layout>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@extends('layouts.app')
 
-    <form method="POST" action="{{ route('login') }}">
+@section('content')
+<div class="bg-white/10 backdrop-blur-md border border-yellow-400/40 rounded-3xl shadow-2xl p-10 w-full max-w-md text-gray-100">
+    <h2 class="text-3xl font-bold text-center text-yellow-400 mb-6">Welkom terug</h2>
+    <p class="text-center text-gray-300 mb-8">Log in om toegang te krijgen tot het Barroc Intens portaal</p>
+
+    <form method="POST" action="{{ route('login') }}" class="space-y-5">
         @csrf
 
-        <!-- Email Address -->
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+            <label class="block text-sm text-gray-300 mb-1">E-mailadres</label>
+            <input type="email" name="email" required autofocus
+                   class="w-full rounded-xl border border-gray-700 bg-gray-900 text-gray-100 px-4 py-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        <div>
+            <label class="block text-sm text-gray-300 mb-1">Wachtwoord</label>
+            <input type="password" name="password" required
+                   class="w-full rounded-xl border border-gray-700 bg-gray-900 text-gray-100 px-4 py-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember_me" class="inline-flex items-center">
-                <input id="remember_me" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
-            </label>
-        </div>
+        <button type="submit" class="w-full bg-yellow-400 text-black font-semibold py-2 rounded-xl hover:bg-yellow-500 transition">
+            Inloggen
+        </button>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}">
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
+        <p class="text-center text-sm mt-6 text-gray-400">
+            Nog geen account?
+            <a href="{{ route('register') }}" class="text-yellow-400 hover:underline">Registreer hier</a>
+        </p>
     </form>
-</x-guest-layout>
+</div>
+@endsection
