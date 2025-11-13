@@ -1,7 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
 
-/** @type {import('tailwindcss').Config} */
 export default {
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
@@ -11,11 +10,22 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                primary: '#212121',
+                accent: '#FDD716',
+                background: '#FFFFFF',
+            },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+                display: ['"Big Shoulders Display"', 'sans-serif'],
+            },
+            borderRadius: {
+                xl: '1rem',
+                '2xl': '1.5rem',
             },
         },
     },
 
     plugins: [forms],
 };
+
