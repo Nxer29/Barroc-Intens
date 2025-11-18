@@ -11,8 +11,16 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                'brand-yellow': '#FDD716',
+                'brand-dark': '#000000',
+                'brand-light': '#FFFFFF',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+            },
+            boxShadow: {
+                soft: '0 4px 8px rgba(0, 0, 0, 0.05)',
             },
         },
     },
