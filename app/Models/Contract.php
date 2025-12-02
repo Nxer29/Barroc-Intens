@@ -1,11 +1,41 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Contract extends Model
 {
-    protected $fillable=['contract_number','quote_id','customer_id','signed_at','start_date','end_date','billing_cycle','pdf_url','status','bkr_checked','bkr_passed','created_by'];
-    public function customer(){ return $this->belongsTo(Customer::class); }
-    public function lines(){ return $this->hasMany(ContractLine::class); }
+    protected $fillable = [
+        'customer_id',
+        'name',
+        'start_date',
+        'end_date',
+        'status',
+        'recurring_amount',
+        'created_by',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+        'recurring_amount' => 'decimal:2',
+    ];
+
+    public function customer()
+    {
+        return $this->belongsTo(\App\Models\Customer::class);
+    }
+
+    public function products()
+    {
+        return $this->belongsToMany(\App\Models\Product::class, 'contract_product')
+                    ->withPivot(['quantity','unit_price'])
+                    ->withTimestamps();
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
 }
