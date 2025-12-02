@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{CustomerController, ProductControl...actController, InvoiceController, MaintenanceRequestController};
+use App\Http\Controllers\Api\{CustomerController, ProductController, QuoteController, ContractController, InvoiceController, MaintenanceRequestController};
 use App\Http\Controllers\Api\InventoryController;
 
 Route::apiResource('customers', CustomerController::class);
