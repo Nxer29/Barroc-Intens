@@ -28,6 +28,14 @@
             <p class="text-gray-300 mb-3">Beheer je gegevens en voorkeuren.</p>
             <a href="{{ route('profile.edit') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Instellingen →</a>
         </div>
+        <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">
+            <h3 class="text-xl font-semibold text-yellow-400 mb-2">Contracten</h3>
+            <p class="text-gray-300 mb-3">Beheer leasecontracten: aanmaken, wijzigen en verwijderen (Finance/Sales).</p>
+            <div class="flex gap-3">
+                <a href="{{ route('contracts.index') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Openen →</a>
+                <a href="{{ route('contracts.create') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Nieuw contract →</a>
+            </div>
+        </div>
     </div>
 </div>
 @endsection
