@@ -33,6 +33,7 @@
             <div class="flex gap-3">
                 <a href="{{ route('contracts.index') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Openen →</a>
                 <a href="{{ route('contracts.create') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Nieuw contract →</a>
+                <a href="{{ route('notes.index') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Notities →</a>
             </div>
         </div>
         <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">

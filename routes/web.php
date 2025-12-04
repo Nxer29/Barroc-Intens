@@ -9,6 +9,8 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AppointmentUIController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomerNoteController;
+use App\Http\Controllers\NotesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,8 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])
         ->name('profile.destroy');
 
-
-    // ============================
+ // ============================
     // 🧑‍💼 Klantenbeheer
     // ============================
     Route::get('/customers/create', [CustomerController::class, 'create'])
@@ -93,6 +94,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/inventory/{inventory}', [InventoryUIController::class, 'show'])
         ->whereNumber('inventory')
         ->name('inventory.show');
+Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
+Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
 
     Route::get('/inventory/{inventory}/edit', [InventoryUIController::class, 'edit'])
         ->whereNumber('inventory')
@@ -141,5 +144,9 @@ Route::middleware(['auth'])->group(function () {
         ->name('appointments.destroy');
 });
 
+
+Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
+    ->name('customers.notes.update');
+});
 
 require __DIR__.'/auth.php';
