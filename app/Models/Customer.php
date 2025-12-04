@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
@@ -25,6 +27,7 @@ class Customer extends Model
         if (is_numeric($this->invoice_address_id) && class_exists(\App\Models\Address::class)) {
             return \App\Models\Address::find((int) $this->invoice_address_id);
         }
+
         return null;
     }
 
@@ -33,11 +36,17 @@ class Customer extends Model
         if (is_numeric($this->delivery_address_id) && class_exists(\App\Models\Address::class)) {
             return \App\Models\Address::find((int) $this->delivery_address_id);
         }
+
         return null;
     }
 
-    public function creator()
+    public function creator(): BelongsTo
     {
         return $this->belongsTo(\App\Models\User::class, 'created_by');
+    }
+
+    public function notes(): HasMany
+    {
+        return $this->hasMany(\App\Models\Note::class)->latest();
     }
 }
