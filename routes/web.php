@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryUIController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\AppointmentUIController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
@@ -76,8 +77,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/customers/{customer}', [CustomerController::class, 'show'])
         ->whereNumber('customer')
         ->name('customers.show');
+
+
+    // ============================
+    // 📄 Contracten
+    // ============================
     Route::resource('contracts', ContractController::class);
-    
+
+
     // ============================
     // 📦 Voorraadbeheer (Inventory UI)
     // ============================
@@ -98,7 +105,7 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
         ->whereNumber('inventory')
         ->name('inventory.update');
 
-    // wijzig voorraad
+    // wijzig voorraad (custom)
     Route::get('/inventory/change/{product}', [InventoryUIController::class, 'changeStock'])
         ->whereNumber('product')
         ->name('inventory.change');
@@ -106,7 +113,38 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
     Route::post('/inventory/change/{product}', [InventoryUIController::class, 'changeStockPost'])
         ->whereNumber('product')
         ->name('inventory.change.post');
-// Optional: route to update a customer's note (if you implemented it)
+
+
+    // ============================
+    // 🗓️ Planner — Afspraken (Appointments UI)
+    // ============================
+    Route::get('/appointments', [AppointmentUIController::class, 'index'])
+        ->name('appointments.index');
+
+    Route::get('/appointments/create', [AppointmentUIController::class, 'create'])
+        ->name('appointments.create');
+
+    Route::post('/appointments', [AppointmentUIController::class, 'store'])
+        ->name('appointments.store');
+
+    Route::get('/appointments/{appointment}', [AppointmentUIController::class, 'show'])
+        ->whereNumber('appointment')
+        ->name('appointments.show');
+
+    Route::get('/appointments/{appointment}/edit', [AppointmentUIController::class, 'edit'])
+        ->whereNumber('appointment')
+        ->name('appointments.edit');
+
+    Route::patch('/appointments/{appointment}', [AppointmentUIController::class, 'update'])
+        ->whereNumber('appointment')
+        ->name('appointments.update');
+
+    Route::delete('/appointments/{appointment}', [AppointmentUIController::class, 'destroy'])
+        ->whereNumber('appointment')
+        ->name('appointments.destroy');
+});
+
+
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
     ->name('customers.notes.update');
 });
