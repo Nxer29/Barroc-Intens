@@ -10,6 +10,7 @@
 
 Schema::create('contracts', function (Blueprint $table) {
 $table->id();
+$table->string('name')->nullable();
 $table->string('contract_number')->unique();
 $table->foreignId('quote_id')->nullable()->constrained('quotes');
 $table->foreignId('customer_id')->constrained('customers');

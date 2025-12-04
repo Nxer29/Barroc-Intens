@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="w-full max-w-6xl">
-    <h1 class="text-4xl font-bold text-yellow-400 mb-8">Welkom terug, {{ Auth::user()->name }} 👋</h1>
 
     <div class="grid md:grid-cols-3 gap-6">
         <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">
