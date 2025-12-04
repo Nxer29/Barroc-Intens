@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\CustomerNoteController;
+use App\Http\Controllers\NotesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,6 +54,12 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/customers', [CustomerController::class, 'store'])->name('customers.store');
     Route::get('/customers/{customer}', [CustomerController::class, 'show'])->name('customers.show');
     Route::resource('contracts', ContractController::class);
+Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
+Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
+
+// Optional: route to update a customer's note (if you implemented it)
+Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
+    ->name('customers.notes.update');
 });
 
 // ✅ Auth scaffolding (login, register, password reset)
