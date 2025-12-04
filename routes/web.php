@@ -142,7 +142,7 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
     Route::delete('/appointments/{appointment}', [AppointmentUIController::class, 'destroy'])
         ->whereNumber('appointment')
         ->name('appointments.destroy');
-});
+
 
 
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
