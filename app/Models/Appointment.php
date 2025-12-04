@@ -1,11 +1,32 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Appointment extends Model
 {
-    public $timestamps=false;
-    protected $fillable=['maintenance_request_id','scheduled_start','scheduled_end','assignee_id','location','status','created_by','created_at'];
-    public function workOrders(){ return $this->hasMany(WorkOrder::class); }
+    protected $fillable = [
+        'customer_id',
+        'type_id',
+        'technician_id',
+        'scheduled_at',
+        'status',
+        'notes',
+    ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class);
+    }
+
+    public function type()
+    {
+        return $this->belongsTo(AppointmentType::class, 'type_id');
+    }
+
+    public function technician()
+    {
+        return $this->belongsTo(User::class, 'technician_id');
+    }
 }

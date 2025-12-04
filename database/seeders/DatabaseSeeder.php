@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ProductCategorySeeder::class,
             ProductSeeder::class,
             InventorySeeder::class,
+            AppointmentTypeSeeder::class,
         ]);
 
         $Admin = User::create([
