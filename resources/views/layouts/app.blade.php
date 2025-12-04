@@ -29,7 +29,7 @@
                 <a href="{{ route('dashboard') }}" class="hover:text-yellow-400">Dashboard</a>
                 <a href="{{ route('products.index') }}" class="hover:text-yellow-400">Lijst</a>
                 <a href="{{ route('inventory.index') }}" class="hover:text-yellow-400">Voorraad</a>
-                <a href="{{ route('styleguide') }}" class="hover:text-yellow-400">Styleguide</a>
+                <a href="{{ route('contracts.index') }}" class="hover:text-yellow-400">Contracts</a>
             </nav>
 
             <div class="flex items-center gap-3 ml-4">
