@@ -1,0 +1,320 @@
+# Testverslagen op basis van Acceptatiecriteria
+
+- Project: Barroc Intens
+- Scope: Acceptatietests per user story
+
+Legenda Resultaat: [ ] Pass 
+
+---
+
+## User Story: S1 – Aantekeningen/afspraken bij klant vastleggen
+- Doel: Als sales medewerker wil ik tijdens gesprekken aantekeningen en afspraken vastleggen op een 8‑inch tablet.
+- Acceptatiecriteria:
+  - AC1: Notitieveld per klant met auteur en timestamp
+  - AC2: Overzicht van notities per klant
+  - AC3: UI werkt op 8‑inch resolutie
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| S1-TC1 | Given klantdetailpagina<br>When ik een notitie toevoeg en opsla<br>Then notitie toont auteur + timestamp | AC1 | [ ] Pass / [ ] Fail | | |
+| S1-TC2 | Given klantdetailpagina<br>When ik naar “Notities” ga<br>Then zie ik lijst van notities voor deze klant | AC2 | [ ] Pass / [ ] Fail | | |
+| S1-TC3 | Given 8-inch viewport (simulatie/device)<br>When ik de notitie UI open<br>Then layout schaalt correct zonder overlap/scroll-issues | AC3 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: [ ] Pass / [ ] Fail (gedekt door S1-TC1)
+- AC2: [ ] Pass / [ ] Fail (gedekt door S1-TC2)
+- AC3: [ ] Pass / [ ] Fail (gedekt door S1-TC3)
+
+### Conclusie user story
+- Status: [Goedgekeurd / Afgekeurd / Voorwaardelijk]
+- Restpunten/bugs: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Planner: bezoeken inplannen in kalender
+- Doel: Als planner wil ik bezoeken inplannen en monteurs koppelen met kalenderweergave.
+- Acceptatiecriteria:
+  - AC1: Kalender dag/week view (rijen/kolommen) voor planner
+  - AC2: Afspraaktypes: storingsaanvraag en routine
+  - AC3: Medewerker koppelen aan afspraak, notificatie naar toegewezen monteur
+  - AC4: Drag & drop of eenvoudige reschedule (prototype minimaal)
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| PL-TC1 | Given planner UI<br>When ik dag- en weekview open<br>Then kalender toont correcte rijen/kolommen | AC1 | [ ] Pass / [ ] Fail | | |
+| PL-TC2 | Given nieuwe afspraak<br>When ik type “storingsaanvraag” kies<br>Then afspraak wordt opgeslagen met type storingsaanvraag | AC2 | [ ] Pass / [ ] Fail | | |
+| PL-TC3 | Given nieuwe afspraak<br>When ik type “routine” kies<br>Then afspraak wordt opgeslagen met type routine | AC2 | [ ] Pass / [ ] Fail | | |
+| PL-TC4 | Given afspraak aanmaken<br>When ik monteur selecteer en opsla<br>Then monteur is gekoppeld en notificatie verstuurd | AC3 | [ ] Pass / [ ] Fail | | |
+| PL-TC5 | Given bestaande afspraak<br>When ik drag & drop naar andere tijd/dag (of via reschedule dialoog)<br>Then nieuwe tijd wordt opgeslagen | AC4 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: PL-TC1
+- AC2: PL-TC2, PL-TC3
+- AC3: PL-TC4
+- AC4: PL-TC5
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Minimalistisch design & Barroc Intens branding
+- Doel: Minimalistisch design met Barroc Intens branding.
+- Acceptatiecriteria:
+  - AC1: Stijlgids aanwezig: wit/zwart + accent geel #FDD716
+  - AC2: Basiskomponenten (knoppen, formulieren, headers, inputs) in component library gedocumenteerd
+  - AC3: Voorbeeldpagina’s: login, dashboard, lijst, detail in Storybook of vergelijkbaar
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| BR-TC1 | Given stijlgids<br>When ik de kleuren/typografie bekijk<br>Then wit/zwart + #FDD716 zijn vastgelegd | AC1 | [ ] Pass / [ ] Fail | | |
+| BR-TC2 | Given component library docs<br>When ik knoppen/formulieren/headers/inputs inspecteer<br>Then alle basiscomponenten zijn beschreven | AC2 | [ ] Pass / [ ] Fail | | |
+| BR-TC3 | Given Storybook (of vergelijkbaar)<br>When ik login/dashboard/lijst/detail stories open<br>Then voorbeeldpagina’s zijn aanwezig en laden | AC3 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: BR-TC1
+- AC2: BR-TC2
+- AC3: BR-TC3
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Gebruiker kan inloggen (authenticatie + rollen)
+- Acceptatiecriteria:
+  - AC1: Login (email/wachtwoord) endpoint beschikbaar en werkend
+  - AC2: Rollen: Finance, Sales, Inkoop, Maintenance, Admin, Manager
+  - AC3: Ongeauthenticeerde requests krijgen 401
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| AUTH-TC1 | Given geldig account<br>When ik POST /login met juiste email/pass<br>Then 200 + token/session | AC1 | [ ] Pass / [ ] Fail | | |
+| AUTH-TC2 | Given onjuiste creds<br>When ik POST /login<br>Then 401/422 met foutmelding | AC1 | [ ] Pass / [ ] Fail | | |
+| AUTH-TC3 | Given ingelogde user<br>When ik rol-info ophaal<br>Then rol ∈ {Finance, Sales, Inkoop, Maintenance, Admin, Manager} | AC2 | [ ] Pass / [ ] Fail | | |
+| AUTH-TC4 | Given geen auth<br>When ik protected endpoint call<br>Then 401 | AC3 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: AUTH-TC1, AUTH-TC2
+- AC2: AUTH-TC3
+- AC3: AUTH-TC4
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Voorraadbeheer per product
+- Acceptatiecriteria:
+  - AC1: Inventory per product met quantity en min_threshold
+  - AC2: Voorraadaanpassingen gelogd (stock_movements)
+  - AC3: Notificatie bij onder min_threshold
+  - AC4: Filteren op voorraadstatus (Momenteel leverbaar / Uit voorraad)
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| INV-TC1 | Given product<br>When ik inventory bekijk<br>Then quantity en min_threshold zichtbaar | AC1 | [ ] Pass / [ ] Fail | | |
+| INV-TC2 | Given product<br>When ik voorraad wijzig (in/uit)<br>Then stock_movements logt wijziging | AC2 | [ ] Pass / [ ] Fail | | |
+| INV-TC3 | Given product met quantity < min_threshold<br>When check draait<br>Then notificatie wordt verzonden/zichtbaar | AC3 | [ ] Pass / [ ] Fail | | |
+| INV-TC4 | Given productlijst<br>When ik filter op “Momenteel leverbaar”<br>Then alleen producten >= min_threshold | AC4 | [ ] Pass / [ ] Fail | | |
+| INV-TC5 | Given productlijst<br>When ik filter op “Uit voorraad”<br>Then alleen producten < min_threshold | AC4 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: INV-TC1
+- AC2: INV-TC2
+- AC3: INV-TC3
+- AC4: INV-TC4, INV-TC5
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Productoverzicht
+- Acceptatiecriteria:
+  - AC1: Filter per categorie en zichtbaarheid (is_visible_to_customers)
+  - AC2: Alleen eindgebruikproducten zichtbaar
+  - AC3: Zoekfunctionaliteit op naam/beschrijving
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| POV-TC1 | Given productlijst<br>When ik filter op categorie + zichtbaarheid<br>Then lijst respecteert filters | AC1 | [ ] Pass / [ ] Fail | | |
+| POV-TC2 | Given gemengde producten<br>When lijst voor sales/eindgebruiker<br>Then alleen eindgebruikproducten zichtbaar | AC2 | [ ] Pass / [ ] Fail | | |
+| POV-TC3 | Given zoekveld<br>When ik zoek op naam/beschrijving<br>Then resultaten matchen query | AC3 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: POV-TC1
+- AC2: POV-TC2
+- AC3: POV-TC3
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Contract CRUD
+- Acceptatiecriteria:
+  - AC1: Contracten kunnen aangemaakt, gewijzigd en verwijderd worden
+  - AC2: Klant, producten en begin/einddatum worden gelinkt
+  - AC3: Contracten staan centraal en zijn direct beschikbaar na mutatie
+  - AC4: Alleen gebruikers met Finance/Sales rechten mogen CRUD uitvoeren
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| CTR-TC1 | Given geldig Finance/Sales user<br>When ik POST nieuw contract<br>Then contract aangemaakt | AC1, AC4 | [ ] Pass / [ ] Fail | | |
+| CTR-TC2 | Given bestaand contract<br>When ik PUT wijziging<br>Then wijzigingen opgeslagen | AC1 | [ ] Pass / [ ] Fail | | |
+| CTR-TC3 | Given bestaand contract<br>When ik DELETE<br>Then contract verwijderd | AC1 | [ ] Pass / [ ] Fail | | |
+| CTR-TC4 | Given contract<br>When ik bekijk<br>Then klant+producten+begin/einddatum gelinkt zichtbaar | AC2 | [ ] Pass / [ ] Fail | | |
+| CTR-TC5 | Given mutatie gedaan<br>When ik contract direct opnieuw opvraag<br>Then nieuwe status/gegevens zichtbaar (geen cache-lag) | AC3 | [ ] Pass / [ ] Fail | | |
+| CTR-TC6 | Given gebruiker zonder Finance/Sales rol<br>When ik CRUD probeer<br>Then 403/forbidden | AC4 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: CTR-TC1, CTR-TC2, CTR-TC3
+- AC2: CTR-TC4
+- AC3: CTR-TC5
+- AC4: CTR-TC1, CTR-TC6
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Role-based access control en autorisatie
+- Acceptatiecriteria:
+  - AC1: Backend autorisatie middleware voorkomt ongeoorloofde acties
+  - AC2: Frontend toont/niet-toont navigatie-items op basis van rol
+  - AC3: Bevat testcases voor ten minste één Finance- en één Maintenance-endpoint
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| RBAC-TC1 | Given endpoint met rolrestrictie<br>When user zonder rol hit endpoint<br>Then 403 (middleware blokkeert) | AC1 | [ ] Pass / [ ] Fail | | |
+| RBAC-TC2 | Given frontend met menu<br>When ingelogd als rol X<br>Then alleen toegestane navigatie getoond | AC2 | [ ] Pass / [ ] Fail | | |
+| RBAC-TC3 | Given Finance endpoint<br>When Finance user callt<br>Then 200 | AC3 | [ ] Pass / [ ] Fail | | |
+| RBAC-TC4 | Given Finance endpoint<br>When Maintenance user callt<br>Then 403 | AC3 | [ ] Pass / [ ] Fail | | |
+| RBAC-TC5 | Given Maintenance endpoint<br>When Maintenance user callt<br>Then 200 | AC3 | [ ] Pass / [ ] Fail | | |
+| RBAC-TC6 | Given Maintenance endpoint<br>When Finance user callt<br>Then 403 | AC3 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: RBAC-TC1
+- AC2: RBAC-TC2
+- AC3: RBAC-TC3, RBAC-TC4, RBAC-TC5, RBAC-TC6
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Producten beheren (CRUD) + zichtbaarheid per doelgroep
+- Acceptatiecriteria:
+  - AC1: Product CRUD met velden (naam, merk, prijs, omschrijving, category, is_visible_to_customers)
+  - AC2: Verwijderen geblokkeerd of soft-delete indien product al besteld is
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| PROD-TC1 | Given productform<br>When ik product aanmaak met alle velden<br>Then product opgeslagen | AC1 | [ ] Pass / [ ] Fail | | |
+| PROD-TC2 | Given bestaand product<br>When ik update velden<br>Then wijzigingen opgeslagen | AC1 | [ ] Pass / [ ] Fail | | |
+| PROD-TC3 | Given product<br>When ik delete zonder orders<br>Then delete slaagt (hard/soft volgens ontwerp) | AC2 | [ ] Pass / [ ] Fail | | |
+| PROD-TC4 | Given product met bestaande orders<br>When ik delete<br>Then verwijderen geblokkeerd of soft-delete toegepast | AC2 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: PROD-TC1, PROD-TC2
+- AC2: PROD-TC3, PROD-TC4
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Klant aanmaken via Sales
+- Acceptatiecriteria:
+  - AC1: Klantformulier met validatie
+  - AC2: Optie: invullen via beschikbare online bronnen (manual/optional)
+  - AC3: Duplicaat-detectie bij aanmaak
+  - AC4: Koppeling naar adresgegevens en contactpersoon
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| CUST-TC1 | Given klantformulier<br>When ik valide data submit<br>Then klant wordt opgeslagen | AC1 | [ ] Pass / [ ] Fail | | |
+| CUST-TC2 | Given klantformulier<br>When verplichte velden missen<br>Then validatiefouten getoond | AC1 | [ ] Pass / [ ] Fail | | |
+| CUST-TC3 | Given online bronnen optie<br>When ik kies “invullen via online bron”<br>Then velden worden ingevuld of voorstel getoond | AC2 | [ ] Pass / [ ] Fail | | |
+| CUST-TC4 | Given bestaande klant<br>When ik nieuwe klant met zelfde unieke data toevoeg<br>Then duplicaat-detectie waarschuwt/blokkeert | AC3 | [ ] Pass / [ ] Fail | | |
+| CUST-TC5 | Given klant aanmaken<br>When ik adres/contact invul<br>Then klant koppelt adres + contactpersoon | AC4 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: CUST-TC1, CUST-TC2
+- AC2: CUST-TC3
+- AC3: CUST-TC4
+- AC4: CUST-TC5
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## User Story: S1 – Rol-specifieke dashboards tonen na inloggen
+- Acceptatiecriteria:
+  - AC1: Dashboard per rol met relevante widgets (Finance: openstaande facturen, Sales: leads/offertes, etc.)
+  - AC2: Dashboarddata laadt acceptabel snel (mock-data <2s)
+  - AC3: Navigatie naar belangrijkste flows aanwezig
+
+### Testcases
+| TC | Given / When / Then | Verwacht (AC) | Resultaat | Evidentie | Opmerkingen/Bugs |
+| --- | --- | --- | --- | --- | --- |
+| DASH-TC1 | Given ingelogd als Finance<br>When ik dashboard open<br>Then widgets relevant voor Finance zichtbaar | AC1 | [ ] Pass / [ ] Fail | | |
+| DASH-TC2 | Given ingelogd als Sales<br>When ik dashboard open<br>Then widgets relevant voor Sales zichtbaar | AC1 | [ ] Pass / [ ] Fail | | |
+| DASH-TC3 | Given dashboard<br>When geladen met mock-data<br>Then TTFB/visuele load < 2s | AC2 | [ ] Pass / [ ] Fail | | |
+| DASH-TC4 | Given dashboard<br>When ik navigatie bekijk<br>Then shortcuts naar belangrijkste flows (rolspecifiek) aanwezig | AC3 | [ ] Pass / [ ] Fail | | |
+
+### Resultaat per AC
+- AC1: DASH-TC1, DASH-TC2
+- AC2: DASH-TC3
+- AC3: DASH-TC4
+
+### Conclusie
+- Status: …
+- Restpunten: …
+- Opvolgacties: …
+
+---
+
+## Samenvattende teststatus
+- Aantal user stories getest: 10
+- Goedgekeurd: [x]
+- Afgekeurd: [x]
+- Voorwaardelijk: [x]
+- Open bugs: [IDs/links]
+- Blokkerende issues: [ja/nee + welke]
+
+## Aanbevelingen
+- Retest na bugfixes; voer regressie uit op auth/RBAC en kalender.
+- Monitor performance op dashboard en notificaties (voorraad/kalender).
+- Dek soft-delete/visibility logica af in regressie.
