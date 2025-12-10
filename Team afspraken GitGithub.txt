@@ -1,0 +1,27 @@
+Team afspraken Git/Github
+
+- **Vragen / vastlopen:** Stuur een bericht in de groep zodra je vragen hebt of iets lastig vindt; het team helpt je.
+- **Klaar met tickets:** Ben je klaar en de volgende sprint heeft nog geen tickets? Help actief een teamgenoot.
+- **Commits:** Maak goede, betekenisvolle commits. Lukt het niet in één commit? Gebruik meerdere kleine commits.
+
+## Uitgebreide versie
+### 1) Vragen of iets moeilijk vinden
+- Deel je vraag of blokkade meteen in de groepschat.
+- Geef context: ticketnummer, wat je probeerde, foutmeldingen/logs, wat je al uitsloot.
+- Doel: sneller ontzorgen en kennis delen; geen stille blokkades.
+
+### 2) Klaar met tickets / lege volgende sprint
+- Check eerst of er groombare of voorbereidings-taken zijn (refinements, kleine fixes, tests, documentatie).
+- Zo niet: sluit aan bij een teamgenoot met een open ticket; stem even af wat het meest helpt (pairen, reviewen, tests schrijven, kleine subtask).
+- Vermijd idle tijd; prioriteer team throughput boven individuele bezetting.
+
+### 3) Goede commits
+- Schrijf duidelijke commit messages (kort wat/waarom). Voorbeeld: `feat: voeg validatie toe voor profielupdate` of `fix: corrigeer null check in order sync`.
+- Houd commits klein en logisch gegroepeerd; meerdere commits zijn prima als dat de review helpt.
+- Commit geen secrets; commit wel relevante config/sample env en migraties wanneer nodig.
+
+## Handig om toe te voegen (optioneel)
+- Definieer kanaalnaam voor vragen (bv. #team-questions).
+- Afspraak over responstijd op vragen (bv. binnen werkdag x uur).
+- Review-richtlijn (bv. 2 paar ogen op elke PR).
+- Branch/commit-conventies (bv. conventional commits) en tooling (lint/test vóór push).
