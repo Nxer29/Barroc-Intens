@@ -10,6 +10,7 @@ return new class extends Migration {
         Schema::create('appointment_types', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // 'routine', 'storing'
+            $table->text('description')->nullable();
         });
 
         Schema::create('appointments', function (Blueprint $table) {
@@ -23,8 +24,8 @@ return new class extends Migration {
                 ->nullable()
                 ->constrained('users');
 
-            $table->dateTime('scheduled_at');   
-            $table->string('status')->default('planned'); 
+            $table->dateTime('scheduled_at');
+            $table->string('status')->default('planned');
 
             $table->text('notes')->nullable();
 
