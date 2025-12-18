@@ -10,7 +10,7 @@
                 <div class="card p-3">
                     <h6>Aantal gebruikers</h6>
                     <p class="h3">{{ $userCount ?? 0 }}</p>
-                    <a href="{{ route('Admin-Dashboard.users') }}" class="btn btn-sm btn-primary">Bekijk Gebruikers</a>
+                    <a href="{{ route('admin-dashboard.users') }}" class="btn btn-sm btn-primary">Bekijk Gebruikers</a>
                 </div>
             </div>
 
