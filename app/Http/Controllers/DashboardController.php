@@ -3,31 +3,176 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Customer;
+use App\Models\Contract;
+use App\Models\Inventory;
+use App\Models\Appointment;
+use App\Models\Product;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $role = $request->user()->role ?? 'Sales';
+        $user = $request->user();
+        $widgets = [];
 
-        $widgets = match($role) {
-            'Finance' => [
-                ['title' => 'Openstaande facturen', 'value' => '12'],
-                ['title' => 'Onbetaalde bedragen', 'value' => '€4.830'],
-            ],
-            'Sales' => [
-                ['title' => 'Leads vandaag', 'value' => '8'],
-                ['title' => 'Offertes', 'value' => '3'],
-            ],
-            'Inkoop' => [
-                ['title' => 'Producten bijna op', 'value' => '6'],
-                ['title' => 'Bestellingen', 'value' => '2'],
-            ],
-            default => [
-                ['title' => 'Taken', 'value' => '4'],
-            ],
-        };
+        // =========================
+        // ADMIN (ziet alles)
+        // =========================
+        if ($user->hasRole('Admin')) {
+            $widgets = [
+                // SALES
+                [
+                    'title' => 'Klanten',
+                    'value' => Customer::count(),
+                    'route' => 'customers.create',
+                ],
+                [
+                    'title' => 'Contracten',
+                    'value' => Contract::count(),
+                    'route' => 'contracts.index',
+                ],
+                [
+                    'title' => 'Afspraken',
+                    'value' => Appointment::count(),
+                    'route' => 'appointments.index',
+                ],
+                [
+                    'title' => 'Nieuwe afspraak',
+                    'value' => 'Toevoegen',
+                    'route' => 'appointments.create',
+                ],
+                [
+                    'title' => 'Nieuw contract',
+                    'value' => 'Aanmaken',
+                    'route' => 'contracts.create',
+                ],
 
-        return view('dashboard', compact('role', 'widgets'));
+                // FINANCE
+                [
+                    'title' => 'Notities',
+                    'value' => 'Overzicht',
+                    'route' => 'notes.index',
+                ],
+                [
+                    'title' => 'Actieve afspraken',
+                    'value' => Appointment::where('status', 'planned')->count(),
+                    'route' => 'appointments.index',
+                ],
+
+                // INKOOP
+                [
+                    'title' => 'Voorraaditems',
+                    'value' => Inventory::count(),
+                    'route' => 'inventory.index',
+                ],
+                [
+                    'title' => 'Producten',
+                    'value' => Product::count(),
+                    'route' => 'products.index',
+                ],
+
+                // ADMIN EXTRA
+                [
+                    'title' => 'Admin dashboard',
+                    'value' => 'Beheer',
+                    'route' => 'admin-dashboard.index',
+                ],
+            ];
+        }
+
+        // =========================
+        // SALES
+        // =========================
+        elseif ($user->hasRole('sales')) {
+            $widgets = [
+                [
+                    'title' => 'Klanten',
+                    'value' => Customer::count(),
+                    'route' => 'customers.create',
+                ],
+                [
+                    'title' => 'Contracten',
+                    'value' => Contract::count(),
+                    'route' => 'contracts.index',
+                ],
+                [
+                    'title' => 'Afspraken',
+                    'value' => Appointment::count(),
+                    'route' => 'appointments.index',
+                ],
+                [
+                    'title' => 'Nieuwe afspraak',
+                    'value' => 'Toevoegen',
+                    'route' => 'appointments.create',
+                ],
+                [
+                    'title' => 'Nieuw contract',
+                    'value' => 'Aanmaken',
+                    'route' => 'contracts.create',
+                ],
+            ];
+        }
+
+        // =========================
+        // FINANCE
+        // =========================
+        elseif ($user->hasRole('finance')) {
+            $widgets = [
+                [
+                    'title' => 'Contracten',
+                    'value' => Contract::count(),
+                    'route' => 'contracts.index',
+                ],
+                [
+                    'title' => 'Notities',
+                    'value' => 'Overzicht',
+                    'route' => 'notes.index',
+                ],
+                [
+                    'title' => 'Actieve afspraken',
+                    'value' => Appointment::where('status', 'planned')->count(),
+                    'route' => 'appointments.index',
+                ],
+            ];
+        }
+
+        // =========================
+        // INKOOP
+        // =========================
+        elseif ($user->hasRole('inkoop')) {
+            $widgets = [
+                [
+                    'title' => 'Voorraaditems',
+                    'value' => Inventory::count(),
+                    'route' => 'inventory.index',
+                ],
+                [
+                    'title' => 'Producten',
+                    'value' => Product::count(),
+                    'route' => 'products.index',
+                ],
+            ];
+        }
+
+        // =========================
+        // MAINTENANCE
+        // =========================
+        elseif ($user->hasRole('maintenance')) {
+            $widgets = [
+                [
+                    'title' => 'Geplande afspraken',
+                    'value' => Appointment::where('status', 'planned')->count(),
+                    'route' => 'appointments.index',
+                ],
+                [
+                    'title' => 'Afspraken',
+                    'value' => 'Bekijken',
+                    'route' => 'appointments.index',
+                ],
+            ];
+        }
+
+        return view('dashboard', compact('widgets'));
     }
 }

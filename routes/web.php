@@ -30,8 +30,8 @@ Route::get('/', function () {
 
 
     Route::group(['middleware' => ['role:Admin']], function () {
-        Route::get('/Admin-Dashboard/users', [AdminController::class, 'users'])->name('Admin-Dashboard.users');
-        Route::resource('Admin-Dashboard', AdminController::class);
+        Route::get('/admin-dashboard/users', [AdminController::class, 'users'])->name('admin-dashboard.users');
+        Route::resource('admin-dashboard', AdminController::class);
         Route::post('/admin/users/roles/{id}', [AdminController::class, 'toggleRole']);
     });
     // ============================

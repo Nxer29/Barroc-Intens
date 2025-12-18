@@ -31,7 +31,7 @@
                 <a href="{{ route('inventory.index') }}" class="hover:text-yellow-400">Voorraad</a>
                 <a href="{{ route('contracts.index') }}" class="hover:text-yellow-400">Contracts</a>
                 @role('Admin')
-                <a href="{{ route('Admin-Dashboard.index') }}" class="hover:text-yellow-400">Admin-Dashboard</a>
+                <a href="{{ route('admin-dashboard.index') }}" class="hover:text-yellow-400">Admin-Dashboard</a>
                 @endrole
             </nav>
 
