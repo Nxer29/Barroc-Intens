@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProfileController;
+use \App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryUIController;
@@ -26,8 +27,13 @@ Route::get('/', function () {
 });
 
 // 🔐 Alleen voor ingelogde gebruikers
-Route::middleware(['auth'])->group(function () {
 
+
+    Route::group(['middleware' => ['role:Admin']], function () {
+        Route::get('/Admin-Dashboard/users', [AdminController::class, 'users'])->name('Admin-Dashboard.users');
+        Route::resource('Admin-Dashboard', AdminController::class);
+        Route::post('/admin/users/roles/{id}', [AdminController::class, 'toggleRole']);
+    });
     // ============================
     // 🏠 Dashboard
     // ============================
@@ -147,6 +153,5 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
 
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
     ->name('customers.notes.update');
-});
 
 require __DIR__.'/auth.php';

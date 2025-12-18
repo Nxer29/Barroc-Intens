@@ -30,6 +30,9 @@
                 <a href="{{ route('products.index') }}" class="hover:text-yellow-400">Lijst</a>
                 <a href="{{ route('inventory.index') }}" class="hover:text-yellow-400">Voorraad</a>
                 <a href="{{ route('contracts.index') }}" class="hover:text-yellow-400">Contracts</a>
+                @role('Admin')
+                <a href="{{ route('Admin-Dashboard.index') }}" class="hover:text-yellow-400">Admin-Dashboard</a>
+                @endrole
             </nav>
 
             <div class="flex items-center gap-3 ml-4">
