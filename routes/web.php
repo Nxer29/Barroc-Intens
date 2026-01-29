@@ -120,6 +120,9 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
         ->whereNumber('product')
         ->name('inventory.change.post');
 
+    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
+
+
 
     // ============================
     // 🗓️ Planner — Afspraken (Appointments UI)

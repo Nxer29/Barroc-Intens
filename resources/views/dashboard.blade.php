@@ -15,12 +15,29 @@
 
     {{-- Widgets --}}
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    @foreach($widgets as $widget)
+            <div class="bg-gray-900 rounded-2xl border border-yellow-400/30 p-6 shadow-lg
+                        hover:scale-[1.02] hover:border-yellow-400 transition duration-200">
 
-        <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">
-            <h3 class="text-xl font-semibold text-yellow-400 mb-2">Nieuwe klant</h3>
-            <p class="text-gray-300 mb-3">Maak snel een nieuwe klant aan (Sales).</p>
-            <a href="{{ route('customers.create') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Aanmaken →</a>
-        </div>
+                {{-- Titel --}}
+                <h3 class="text-lg font-semibold text-yellow-400 mb-2">
+                    {{ $widget['title'] }}
+                </h3>
+
+                {{-- Waarde --}}
+                <p class="text-3xl font-extrabold text-white mb-4">
+                    {{ $widget['value'] }}
+                </p>
+
+                {{-- Actie --}}
+                @if(isset($widget['route']))
+                    <a href="{{ route($widget['route']) }}"
+                       class="inline-flex items-center text-yellow-300 hover:text-yellow-500 font-medium">
+                        Openen
+                        <span class="ml-2">→</span>
+                    </a>
+                @endif
+
 
             </div>
         @endforeach
