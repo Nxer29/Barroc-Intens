@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ProductCategorySeeder::class,
             ProductSeeder::class,
             InventorySeeder::class,
+            AppointmentTypeSeeder::class,
         ]);
 
         $Admin = User::create([
@@ -31,6 +32,29 @@ class DatabaseSeeder extends Seeder
 
 
 
+        $finance = User::create([
+            'name' => 'Finance Medewerker',
+            'email' => 'finance@example.com',
+            'password' => bcrypt('secret'),
+        ]);
+
+        $Sales = User::create([
+            'name' => 'Sales Medewerker',
+            'email' => 'sales@example.com',
+            'password' => bcrypt('secret'),
+        ]);
+
+        $Inkoop = User::create([
+            'name' => 'Inkoop Medewerker',
+            'email' => 'inkoop@example.com',
+            'password' => bcrypt('secret'),
+        ]);
+
+        $Maintenance = User::create([
+            'name' => 'Maintenance Medewerker',
+            'email' => 'maintenance@example.com',
+            'password' => bcrypt('secret'),
+        ]);
 
         Role::create(['name' => 'Admin']);
         Role::create(['name' => 'finance']);

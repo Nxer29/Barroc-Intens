@@ -2,8 +2,10 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\{CustomerController, ProductController, QuoteController, ContractController, InvoiceController, MaintenanceRequestController};
 use App\Http\Controllers\Api\InventoryController;
+use App\Http\Controllers\Api\AppointmentController;
 
 Route::apiResource('customers', CustomerController::class);
+Route::apiResource('appointments', AppointmentController::class);
 Route::apiResource('products', ProductController::class);
 Route::apiResource('quotes', QuoteController::class);
 Route::apiResource('contracts', ContractController::class);
