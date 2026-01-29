@@ -16,7 +16,7 @@
             <a href="{{ route('products.index') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Openen →</a>
         </div>
 
-         <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">
+        <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">
             <h3 class="text-xl font-semibold text-yellow-400 mb-2">Nieuwe klant</h3>
             <p class="text-gray-300 mb-3">Maak snel een nieuwe klant aan (Sales).</p>
             <a href="{{ route('customers.create') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Aanmaken →</a>
@@ -35,6 +35,11 @@
                 <a href="{{ route('contracts.create') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Nieuw contract →</a>
                 <a href="{{ route('notes.index') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Notities →</a>
             </div>
+        </div>
+        <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg hover:scale-[1.02] transition">
+            <h3 class="text-xl font-semibold text-yellow-400 mb-2">Factuuroverzicht</h3>
+            <p class="text-gray-300 mb-3">Facturen, contracten en status filteren en beheren.</p>
+            <a href="{{ route('invoices.overview') }}" class="text-yellow-300 hover:text-yellow-500 font-medium">Openen →</a>
         </div>
     </div>
 </div>

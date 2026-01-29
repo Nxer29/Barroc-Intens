@@ -8,8 +8,6 @@ use App\Http\Controllers\InventoryUIController;
 use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ContractController;
 use App\Http\Controllers\CustomerNoteController;
 use App\Http\Controllers\NotesController;
 
@@ -80,12 +78,18 @@ Route::middleware(['auth'])->group(function () {
         ->whereNumber('customer')
         ->name('customers.show');
     Route::resource('contracts', ContractController::class);
-Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
-Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
 
+
+    Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
+    Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
+
+
+    
 // Optional: route to update a customer's note (if you implemented it)
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
     ->name('customers.notes.update');
+
+    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
 });
 
 require __DIR__.'/auth.php';

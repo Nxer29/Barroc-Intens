@@ -32,6 +32,7 @@
                 <a href="{{ route('contracts.index') }}" class="hover:text-yellow-400">Contracts</a>
             </nav>
 
+            
             <div class="flex items-center gap-3 ml-4">
 
                 <!-- Theme toggle -->
