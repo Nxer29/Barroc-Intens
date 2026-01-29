@@ -35,6 +35,7 @@
                 @endrole
             </nav>
 
+            
             <div class="flex items-center gap-3 ml-4">
 
                 <!-- Theme toggle -->
