@@ -49,7 +49,7 @@ class ContractController extends Controller
         try {
             // Maak model instance en zet properties direct
             $contract = new Contract();
-            $contract->contract_number  = $request->input('contract_number') 
+            $contract->contract_number  = $request->input('contract_number')
                                            ?? 'CN-' . time() . '-' . Str::upper(Str::random(6));
             $contract->customer_id      = $data['customer_id'];
             $contract->name             = $data['name'] ?? null;

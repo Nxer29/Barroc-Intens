@@ -47,9 +47,19 @@ Route::get('/', function () {
     Route::get('/products', [ProductController::class, 'index'])
         ->name('products.index');
 
+    Route::get('/products/create', [ProductController::class, 'create'])
+        ->name('products.create');
+
+    Route::post('/products', [ProductController::class, 'store'])
+        ->name('products.store');
+
     Route::get('/products/{product}', [ProductController::class, 'show'])
         ->whereNumber('product')
         ->name('products.show');
+
+    Route::get('/products/{product}/edit', [ProductController::class, 'update'])->name('products.edit');
+    Route::patch('/products/{product}', [ProductController::class, 'update']);
+    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
 
     // ============================
@@ -100,8 +110,9 @@ Route::get('/', function () {
     Route::get('/inventory/{inventory}', [InventoryUIController::class, 'show'])
         ->whereNumber('inventory')
         ->name('inventory.show');
-Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
-Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
+
+    Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
+    Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
 
     Route::get('/inventory/{inventory}/edit', [InventoryUIController::class, 'edit'])
         ->whereNumber('inventory')
