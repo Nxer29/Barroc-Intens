@@ -84,6 +84,9 @@ Route::get('/', function () {
  // ============================
     // 🧑‍💼 Klantenbeheer
     // ============================
+    Route::get('/customers/index', [CustomerController::class, 'index'])
+        ->name('customers.index');
+
     Route::get('/customers/create', [CustomerController::class, 'create'])
         ->name('customers.create');
 

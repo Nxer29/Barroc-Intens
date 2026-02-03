@@ -28,6 +28,11 @@ class DashboardController extends Controller
                     'route' => 'customers.create',
                 ],
                 [
+                    'title' => 'Klanten Overzicht',
+                    'value' => Customer::count(),
+                    'route' => 'customers.index',
+                ],
+                [
                     'title' => 'Contracten',
                     'value' => Contract::count(),
                     'route' => 'contracts.index',
@@ -46,6 +51,11 @@ class DashboardController extends Controller
                     'title' => 'Nieuw contract',
                     'value' => 'Aanmaken',
                     'route' => 'contracts.create',
+                ],
+                [
+                    'title' => 'Factuuroverzicht',
+                    'value' => 'Facturen, contracten en status filteren en beheren.',
+                    'route' => 'invoices.overview',
                 ],
 
                 // FINANCE
@@ -92,6 +102,11 @@ class DashboardController extends Controller
                     'route' => 'customers.create',
                 ],
                 [
+                    'title' => 'Klanten Overzicht',
+                    'value' => Customer::count(),
+                    'route' => 'customers.index',
+                ],
+                [
                     'title' => 'Contracten',
                     'value' => Contract::count(),
                     'route' => 'contracts.index',
@@ -110,6 +125,11 @@ class DashboardController extends Controller
                     'title' => 'Nieuw contract',
                     'value' => 'Aanmaken',
                     'route' => 'contracts.create',
+                ],
+                [
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
                 ],
             ];
         }
@@ -133,6 +153,11 @@ class DashboardController extends Controller
                     'title' => 'Actieve afspraken',
                     'value' => Appointment::where('status', 'planned')->count(),
                     'route' => 'appointments.index',
+                ],
+                [
+                    'title' => 'Factuuroverzicht',
+                    'value' => 'Facturen, contracten en status filteren en beheren.',
+                    'route' => 'invoices.overview',
                 ],
             ];
         }

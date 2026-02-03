@@ -9,14 +9,38 @@ use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
+    /**
+     * Klantenoverzicht + zoeken
+     */
+    public function index(Request $request)
+    {
+        $search = $request->input('q');
+
+        $customers = Customer::query()
+            ->when($search, function ($query) use ($search) {
+                $query->where('company_name', 'like', "%{$search}%")
+                      ->orWhere('id', $search);
+            })
+            ->orderBy('company_name')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('customers.index', compact('customers', 'search'));
+    }
+
+    /**
+     * Klant aanmaken
+     */
     public function create()
     {
         return view('customers.create');
     }
 
+    /**
+     * Klant opslaan
+     */
     public function store(Request $request)
     {
-        // Validatie (invoice/delivery als tekst)
         $data = $request->validate([
             'company_name'        => 'required|string|max:255',
             'contact_name'        => 'nullable|string|max:255',
@@ -31,10 +55,12 @@ class CustomerController extends Controller
 
         $force = $request->boolean('force', false);
 
-        // Duplicaat-detectie: e-mail, telefoon (genormaliseerd) en bedrijfsnaam-fragment
-        $companyFragment = isset($data['company_name']) ? mb_strtolower(trim($data['company_name'])) : null;
+        // ===== Duplicaat-detectie =====
+        $companyFragment = mb_strtolower(trim($data['company_name']));
         $email = $data['contact_email'] ?? null;
-        $phone = isset($data['contact_phone']) ? preg_replace('/\D+/', '', $data['contact_phone']) : null;
+        $phone = isset($data['contact_phone'])
+            ? preg_replace('/\D+/', '', $data['contact_phone'])
+            : null;
 
         $matches = collect();
 
@@ -44,26 +70,30 @@ class CustomerController extends Controller
 
         if ($phone) {
             $matches = $matches->merge(
-                Customer::whereRaw("REPLACE(REPLACE(REPLACE(contact_phone, ' ', ''), '+', ''), '-', '') = ?", [$phone])
-                        ->take(10)->get()
+                Customer::whereRaw(
+                    "REPLACE(REPLACE(REPLACE(contact_phone, ' ', ''), '+', ''), '-', '') = ?",
+                    [$phone]
+                )->take(10)->get()
             );
         }
 
         if ($companyFragment) {
             $frag = mb_substr($companyFragment, 0, 6);
             $matches = $matches->merge(
-                Customer::whereRaw('LOWER(company_name) LIKE ?', ['%' . $frag . '%'])->take(10)->get()
+                Customer::whereRaw('LOWER(company_name) LIKE ?', ['%' . $frag . '%'])
+                        ->take(10)
+                        ->get()
             );
         }
 
         $matches = $matches->unique('id')->values();
 
         if ($matches->isNotEmpty() && ! $force) {
-            // Stuur duplicaten terug naar view (create.blade toont ze)
-            return back()->withInput()->with('duplicates', $matches);
+            return back()
+                ->withInput()
+                ->with('duplicates', $matches);
         }
 
-        // Vul created_by als ingelogd
         if (Auth::check()) {
             $data['created_by'] = Auth::id();
         }
@@ -71,20 +101,49 @@ class CustomerController extends Controller
         try {
             $customer = Customer::create($data);
 
-            Log::info('Customer created', ['id' => $customer->id, 'data' => $data]);
+            Log::info('Customer created', [
+                'id' => $customer->id,
+            ]);
 
-            return redirect()->route('customers.show', ['customer' => $customer->id])
-                             ->with('success', 'Klant aangemaakt.');
+            return redirect()
+                ->route('customers.show', $customer)
+                ->with('success', 'Klant aangemaakt.');
         } catch (\Throwable $e) {
-            Log::error('Failed to create customer', ['message' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            Log::error('Failed to create customer', [
+                'message' => $e->getMessage(),
+            ]);
 
-            // Voor development: toon foutmelding in formulier (vervang in productie door generieke melding)
-            return back()->withInput()->withErrors(['general' => $e->getMessage()]);
+            return back()
+                ->withInput()
+                ->withErrors(['general' => $e->getMessage()]);
         }
     }
 
-    public function show(Customer $customer)
-    {
-        return view('customers.show', compact('customer'));
-    }
+ 
+public function show(Customer $customer)
+{
+    // Laad ALLEEN bestaande relaties
+    $customer->load([
+        'notes',
+        'creator',
+        // 'contracts',   // TODO Sprint 2: relatie toevoegen
+        // 'appointments',// TODO Sprint 2
+        // 'orders',      // TODO Sprint 2
+        // 'invoices',    // TODO Sprint 2
+    ]);
+
+    /**
+     * Voorbereidende data voor dashboard / tabs
+     * (zodat de view alvast klaar is)
+     */
+    $stats = [
+        'contracts'    => 0, // TODO: Contract::where('customer_id', $customer->id)->count()
+        'appointments' => 0, // TODO
+        'orders'       => 0, // TODO
+        'invoices'     => 0, // TODO
+    ];
+
+    return view('customers.show', compact('customer', 'stats'));
+}
+
 }
