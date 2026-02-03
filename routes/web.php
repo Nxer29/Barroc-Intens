@@ -53,12 +53,26 @@ Route::get('/', function () {
     Route::post('/products', [ProductController::class, 'store'])
         ->name('products.store');
 
+    Route::get('/products/edit', [ProductController::class, 'edit'])
+    ->name('products.edit');
+
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
+    ->name('products.edit');
+
+    Route::patch('/products/{product}', [ProductController::class, 'edit'])
+    ->name('products.edit');
+
     Route::get('/products/{product}', [ProductController::class, 'show'])
         ->whereNumber('product')
         ->name('products.show');
 
-    Route::get('/products/{product}/edit', [ProductController::class, 'update'])->name('products.edit');
-    Route::patch('/products/{product}', [ProductController::class, 'update']);
+
+    Route::patch('/products/{product}', [ProductController::class, 'edit'])
+    ->name('products.edit');
+
+    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
+    ->name('products.edit');
+
     Route::delete('/products/{product}', [ProductController::class, 'destroy']);
 
 
