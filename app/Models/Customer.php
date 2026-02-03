@@ -21,32 +21,76 @@ class Customer extends Model
         'created_by',
     ];
 
-    // Optionele helper: laad gekoppeld Address-model als invoice_address_id numeriek is
-    public function invoiceAddressIfExists()
-    {
-        if (is_numeric($this->invoice_address_id) && class_exists(\App\Models\Address::class)) {
-            return \App\Models\Address::find((int) $this->invoice_address_id);
-        }
-
-        return null;
-    }
-
-    public function deliveryAddressIfExists()
-    {
-        if (is_numeric($this->delivery_address_id) && class_exists(\App\Models\Address::class)) {
-            return \App\Models\Address::find((int) $this->delivery_address_id);
-        }
-
-        return null;
-    }
+    /**
+     * =========================
+     * RELATIES
+     * =========================
+     */
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function contracts(): HasMany
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function appointments(): HasMany
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     public function notes(): HasMany
     {
-        return $this->hasMany(\App\Models\Note::class)->latest();
+        return $this->hasMany(Note::class)->latest();
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class);
+    }
+
+    /**
+     * =========================
+     * HELPER METHODS
+     * =========================
+     */
+
+    public function invoiceAddress()
+    {
+        return is_numeric($this->invoice_address_id)
+            ? Address::find($this->invoice_address_id)
+            : null;
+    }
+
+    public function deliveryAddress()
+    {
+        return is_numeric($this->delivery_address_id)
+            ? Address::find($this->delivery_address_id)
+            : null;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function displayName(): string
+    {
+        return $this->company_name
+            ?? $this->contact_name
+            ?? 'Onbekende klant';
     }
 }
