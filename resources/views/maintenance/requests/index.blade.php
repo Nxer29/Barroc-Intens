@@ -16,7 +16,47 @@
                 Maintenance – Storingsaanvragen
             </h1>
         </div>
+<form method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
+    {{-- Status --}}
+    <select name="status" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-300">
+        <option value="">Alle statussen</option>
+        <option value="open" @selected(request('status') === 'open')>Open</option>
+        <option value="planned" @selected(request('status') === 'planned')>Gepland</option>
+        <option value="closed" @selected(request('status') === 'closed')>Afgerond</option>
+    </select>
+
+    {{-- Prioriteit --}}
+    <select name="priority" class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-300">
+        <option value="">Alle prioriteiten</option>
+        <option value="low" @selected(request('priority') === 'low')>Laag</option>
+        <option value="medium" @selected(request('priority') === 'medium')>Middel</option>
+        <option value="high" @selected(request('priority') === 'high')>Hoog</option>
+    </select>
+
+    {{-- Vanaf datum --}}
+    <input type="date"
+           name="from_date"
+           value="{{ request('from_date') }}"
+           class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-300">
+
+    {{-- Tot datum --}}
+    <input type="date"
+           name="to_date"
+           value="{{ request('to_date') }}"
+           class="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-gray-300">
+
+    <div class="md:col-span-4 flex gap-3">
+        <button class="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg font-medium">
+            Filteren
+        </button>
+
+        <a href="{{ route('maintenance.requests.index') }}"
+           class="px-4 py-2 border border-gray-700 rounded-lg text-gray-300">
+            Reset
+        </a>
+    </div>
+</form>
         <div class="overflow-x-auto">
             <table class="w-full text-sm text-left text-gray-300">
                 <thead class="text-xs uppercase text-gray-400 border-b border-gray-800">
