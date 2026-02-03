@@ -54,7 +54,7 @@ class DashboardController extends Controller
                 ],
                 [
                     'title' => 'Factuuroverzicht',
-                    'value' => 'Facturen, contracten en status filteren en beheren.',
+                    'value' => '',
                     'route' => 'invoices.overview',
                 ],
 
@@ -131,6 +131,11 @@ class DashboardController extends Controller
                     'value' => '',
                     'route' => 'invoices.overview',
                 ],
+                [
+                    'title' => 'Storingformulier',
+                    'value' => '',
+                    'route' => 'maintenance.requests.index',
+                 ],
             ];
         }
 
@@ -156,7 +161,7 @@ class DashboardController extends Controller
                 ],
                 [
                     'title' => 'Factuuroverzicht',
-                    'value' => 'Facturen, contracten en status filteren en beheren.',
+                    'value' => '',
                     'route' => 'invoices.overview',
                 ],
             ];
@@ -195,6 +200,11 @@ class DashboardController extends Controller
                     'value' => 'Bekijken',
                     'route' => 'appointments.index',
                 ],
+                 [
+                    'title' => 'Storingformulier',
+                    'value' => 'Bekijken',
+                    'route' => 'maintenance.requests.index',
+                 ],
             ];
         }
 
