@@ -3,6 +3,7 @@
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\ProfileController;
 use \App\Http\Controllers\AdminController;
+use App\Http\Controllers\MaintenanceRequestController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryUIController;
@@ -98,6 +99,9 @@ Route::get('/', function () {
  // ============================
     // 🧑‍💼 Klantenbeheer
     // ============================
+    Route::get('/customers/index', [CustomerController::class, 'index'])
+        ->name('customers.index');
+
     Route::get('/customers/create', [CustomerController::class, 'create'])
         ->name('customers.create');
 
@@ -177,6 +181,30 @@ Route::get('/', function () {
         ->whereNumber('appointment')
         ->name('appointments.destroy');
 
+// ============================
+//  Maintenance – Storingsaanvragen
+// ============================
+
+// Overzicht (Maintenance queue)
+Route::get('/maintenance/requests', [MaintenanceRequestController::class, 'index'])
+    ->name('maintenance.requests.index');
+
+// Aanmaken (Sales → Maintenance)
+Route::get('/maintenance/requests/create/{customer}', [MaintenanceRequestController::class, 'create'])
+    ->whereNumber('customer')
+    ->name('maintenance.requests.create');
+
+Route::post('/maintenance/requests', [MaintenanceRequestController::class, 'store'])
+    ->name('maintenance.requests.store');
+
+// Detail (later uitbreiden)
+Route::get('/maintenance/requests/{maintenanceRequest}', [MaintenanceRequestController::class, 'show'])
+    ->whereNumber('maintenanceRequest')
+    ->name('maintenance.requests.show');
+Route::patch(
+    '/maintenance/requests/{maintenanceRequest}/status',
+    [MaintenanceRequestController::class, 'updateStatus']
+)->name('maintenance.requests.status');
 
 
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])

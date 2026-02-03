@@ -28,6 +28,11 @@ class DashboardController extends Controller
                     'route' => 'customers.create',
                 ],
                 [
+                    'title' => 'Klanten Overzicht',
+                    'value' => Customer::count(),
+                    'route' => 'customers.index',
+                ],
+                [
                     'title' => 'Contracten',
                     'value' => Contract::count(),
                     'route' => 'contracts.index',
@@ -46,6 +51,11 @@ class DashboardController extends Controller
                     'title' => 'Nieuw contract',
                     'value' => 'Aanmaken',
                     'route' => 'contracts.create',
+                ],
+                [
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
                 ],
 
                 // FINANCE
@@ -92,6 +102,11 @@ class DashboardController extends Controller
                     'route' => 'customers.create',
                 ],
                 [
+                    'title' => 'Klanten Overzicht',
+                    'value' => Customer::count(),
+                    'route' => 'customers.index',
+                ],
+                [
                     'title' => 'Contracten',
                     'value' => Contract::count(),
                     'route' => 'contracts.index',
@@ -111,6 +126,16 @@ class DashboardController extends Controller
                     'value' => 'Aanmaken',
                     'route' => 'contracts.create',
                 ],
+                [
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
+                ],
+                [
+                    'title' => 'Storingformulier',
+                    'value' => '',
+                    'route' => 'maintenance.requests.index',
+                 ],
             ];
         }
 
@@ -133,6 +158,11 @@ class DashboardController extends Controller
                     'title' => 'Actieve afspraken',
                     'value' => Appointment::where('status', 'planned')->count(),
                     'route' => 'appointments.index',
+                ],
+                [
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
                 ],
             ];
         }
@@ -170,6 +200,11 @@ class DashboardController extends Controller
                     'value' => 'Bekijken',
                     'route' => 'appointments.index',
                 ],
+                 [
+                    'title' => 'Storingformulier',
+                    'value' => 'Bekijken',
+                    'route' => 'maintenance.requests.index',
+                 ],
             ];
         }
 
