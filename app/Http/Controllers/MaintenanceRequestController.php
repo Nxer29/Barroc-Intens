@@ -12,14 +12,42 @@ use Illuminate\Support\Str;
 class MaintenanceRequestController extends Controller
 {
     /**
-     * Maintenance queue
+     * Maintenance queue (met filters)
      */
-    public function index()
+    public function index(Request $request)
     {
-        $requests = MaintenanceRequest::with(['customer'])
-            ->orderBy('priority', 'desc')
+        $query = MaintenanceRequest::with(['customer']);
+
+        // 🔎 Filters
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('priority')) {
+            $query->where('priority', $request->priority);
+        }
+
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        // 📌 Sortering: prioriteit + datum
+        $requests = $query
+            ->orderByRaw("
+                CASE priority
+                    WHEN 'high' THEN 1
+                    WHEN 'medium' THEN 2
+                    WHEN 'low' THEN 3
+                    ELSE 4
+                END
+            ")
             ->orderBy('created_at', 'desc')
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
 
         return view('maintenance.requests.index', compact('requests'));
     }
@@ -29,7 +57,6 @@ class MaintenanceRequestController extends Controller
      */
     public function create(Customer $customer)
     {
-        // alleen contracten van deze klant
         $contracts = Contract::with('products')
             ->where('customer_id', $customer->id)
             ->get();
@@ -55,12 +82,16 @@ class MaintenanceRequestController extends Controller
         $data['reported_by'] = Auth::id();
         $data['status'] = 'open';
 
-        $request = MaintenanceRequest::create($data);
+        MaintenanceRequest::create($data);
 
         return redirect()
             ->route('maintenance.requests.index')
             ->with('success', 'Storingsaanvraag is doorgestuurd naar Maintenance.');
     }
+
+    /**
+     * Status bijwerken (Maintenance)
+     */
     public function updateStatus(Request $request, MaintenanceRequest $maintenanceRequest)
     {
         $request->validate([
@@ -79,7 +110,12 @@ class MaintenanceRequestController extends Controller
      */
     public function show(MaintenanceRequest $maintenanceRequest)
     {
-        $maintenanceRequest->load(['customer']);
+        $maintenanceRequest->load([
+            'customer',
+            'contract',
+            'product',
+            'customer.creator',
+        ]);
 
         return view('maintenance.requests.show', compact('maintenanceRequest'));
     }
