@@ -19,10 +19,17 @@
                 <p class="text-sm text-gray-400">Klant ID: #{{ $customer->id }}</p>
             </div>
 
-            <a href="{{ route('customers.create') }}"
-               class="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg font-medium hover:opacity-90">
-                Nieuwe klant
-            </a>
+            <div class="flex gap-3">
+                <a href="{{ route('customers.create') }}"
+                   class="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg font-medium hover:opacity-90">
+                    Nieuwe klant
+                </a>
+
+                <a href="{{ route('maintenance.requests.create', $customer) }}"
+                   class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700">
+                    Storingsaanvraag
+                </a>
+            </div>
         </div>
 
         {{-- QUICK STATS --}}
