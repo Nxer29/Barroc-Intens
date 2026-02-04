@@ -29,6 +29,7 @@
                     <th class="py-3 px-4 text-left">Acties</th>
                 </tr>
             </thead>
+
             <tbody>
                 @forelse($invoices as $invoice)
                     <tr class="hover:bg-gray-900">
