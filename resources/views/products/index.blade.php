@@ -1,36 +1,69 @@
-
 @extends('layouts.app')
 
 @section('content')
-    <x-ui.header title="Producten">
-        <x-ui.button variant="outline" onclick="location.href='{{ route('products.index') }}'">Refresh</x-ui.button>
-    </x-ui.header>
+<div class="max-w-7xl mx-auto p-8">
 
-    <main class="max-w-6xl mx-auto p-6">
-        <form method="GET" action="{{ route('products.index') }}" class="flex flex-col md:flex-row gap-3 mb-6">
-            <x-ui.input name="q" placeholder="Zoek op naam of beschrijving" class="md:flex-1" />
-            <x-ui.button type="submit" class="md:w-40">Zoeken</x-ui.button>
-            <a href="{{ route('products.create') }}">
-                <x-ui.button type="button" class="md:w-40">Nieuw product</x-ui.button>
-            </a>
-        </form>
+    <h2 class="text-2xl font-bold text-yellow-400 mb-6">Producten</h2>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            @foreach($products as $product)
-                <a href="{{ route('products.edit', $product->id) }}">
-                    <x-ui.button type="button" class="md:w-40">Bewerken</x-ui.button>
-                </a>
+    {{-- FILTER --}}
+    <form method="GET" action="{{ route('products.index') }}" class="mb-6 flex flex-wrap gap-4">
+        <input
+            name="q"
+            value="{{ request('q') }}"
+            placeholder="Zoek op naam of beschrijving"
+            class="bg-gray-900 border border-gray-700 rounded px-4 py-2 text-gray-200 flex-1"
+        >
 
-                <a href="{{ route('products.show', $product->id) }}">
-                    <x-ui.card>
-                        <h3 class="text-lg text-brand-dark">{{ $product->name }}</h3>
-                        <p class="text-sm text-gray-600">{{ $product->category }}</p>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="font-display color: var(--color-black);">{{ $product->price }}</span>
-                            <span class="text-sm text-gray-500">Voorraad: {{ $product->stock }}</span>
-                        </div>
-                    </x-ui.card>
-                </a>
-            @endforeach </div>
-    </main>
+        <button type="submit"
+            class="bg-yellow-400 px-4 py-2 rounded text-gray-900 font-medium hover:opacity-90">
+            Zoeken
+        </button>
+
+        <a href="{{ route('products.create') }}"
+           class="bg-yellow-400 px-4 py-2 rounded text-gray-900 font-medium hover:opacity-90">
+            Nieuw product
+        </a>
+    </form>
+
+    {{-- PRODUCT GRID --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @forelse($products as $product)
+            <div class="bg-gray-900 border border-yellow-400/30 rounded-xl p-5 hover:bg-gray-800 transition">
+
+                <h3 class="text-lg font-semibold text-yellow-300 mb-1">
+                    {{ $product->name }}
+                </h3>
+
+                <p class="text-sm text-gray-400 mb-3">
+                    {{ $product->category->name ?? 'Geen categorie' }}
+                </p>
+
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-gray-300">
+                        Voorraad: {{ $product->stock }}
+                    </span>
+
+                    <span class="text-xl font-bold text-gray-100">
+                        € {{ number_format((float) $product->price, 2, ',', '.') }}
+                    </span>
+                </div>
+
+                <div class="flex gap-4 text-sm">
+                    <a href="{{ route('products.show', $product->id) }}"
+                       class="text-yellow-300 hover:underline">
+                        Bekijk
+                    </a>
+
+                    <a href="{{ route('products.edit', $product->id) }}"
+                       class="text-yellow-300 hover:underline">
+                        Bewerk
+                    </a>
+                </div>
+            </div>
+        @empty
+            <p class="text-gray-400 italic">Geen producten gevonden.</p>
+        @endforelse
+    </div>
+
+</div>
 @endsection
