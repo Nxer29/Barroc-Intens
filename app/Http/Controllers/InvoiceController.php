@@ -74,4 +74,25 @@ class InvoiceController extends Controller
 
         return view('invoices.show', compact('invoice'));
     }
+
+    public function updateStatus(Request $request, Invoice $invoice)
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:concept,onbetald,betaald'],
+        ]);
+
+        $invoice->status = $data['status'];
+        $invoice->save();
+
+        return back()->with('success', 'Factuurstatus aangepast.');
+    }
+
+    public function destroy(Invoice $invoice)
+    {
+        $invoice->delete();
+
+        return redirect()
+            ->route('invoices.overview')
+            ->with('success', 'Factuur verwijderd.');
+    }
 }
