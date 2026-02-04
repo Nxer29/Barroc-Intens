@@ -195,6 +195,14 @@ Route::get('/', function () {
     Route::delete('/facturen/{invoice}', [InvoiceController::class, 'destroy'])
     ->whereNumber('invoice')
     ->name('invoices.destroy');
+
+    Route::get('/facturen/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])
+    ->whereNumber('invoice')
+    ->name('invoices.pdf');
+
+    Route::post('/facturen/{invoice}/send', [InvoiceController::class, 'sendPdf'])
+    ->whereNumber('invoice')
+    ->name('invoices.send');
 // ============================
 //  Maintenance – Storingsaanvragen
 // ============================
