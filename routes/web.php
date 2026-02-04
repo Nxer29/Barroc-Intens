@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
 use App\Http\Controllers\NotesController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -149,10 +150,7 @@ Route::get('/', function () {
         ->whereNumber('product')
         ->name('inventory.change.post');
 
-    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
-
-
-
+    
     // ============================
     // 🗓️ Planner — Afspraken (Appointments UI)
     // ============================
@@ -181,6 +179,15 @@ Route::get('/', function () {
         ->whereNumber('appointment')
         ->name('appointments.destroy');
 
+    // ============================
+    // 🗒️ Facturen (Invoices)
+    // ============================
+    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
+    Route::get('/facturen/nieuw', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/facturen', [InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/facturen/{invoice}', [InvoiceController::class, 'show'])
+    ->whereNumber('invoice')
+    ->name('invoices.show');
 // ============================
 //  Maintenance – Storingsaanvragen
 // ============================
