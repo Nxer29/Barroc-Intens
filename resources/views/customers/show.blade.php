@@ -1,79 +1,167 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full max-w-4xl mx-auto py-8">
+<div class="w-full max-w-6xl mx-auto py-8">
+
     @if(session('success'))
         <div class="mb-6 rounded-lg bg-green-900/60 border border-green-500 p-4 text-green-200">
             {{ session('success') }}
         </div>
     @endif
 
-    <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg">
+    {{-- HEADER --}}
+    <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg mb-6">
         <div class="flex items-start justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-yellow-400 mb-1">{{ $customer->company_name }}</h1>
+                <h1 class="text-3xl font-bold text-yellow-400 mb-1">
+                    {{ $customer->displayName() }}
+                </h1>
                 <p class="text-sm text-gray-400">Klant ID: #{{ $customer->id }}</p>
             </div>
 
-            <div class="text-right">
-                <a href="{{ route('customers.create') }}" class="inline-block px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg font-medium hover:opacity-90">Nieuwe klant</a>
+            <div class="flex gap-3">
+                <a href="{{ route('customers.create') }}"
+                   class="px-4 py-2 bg-yellow-400 text-gray-900 rounded-lg font-medium hover:opacity-90">
+                    Nieuwe klant
+                </a>
+
+                <a href="{{ route('maintenance.requests.create', $customer) }}"
+                   class="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700">
+                    Storingsaanvraag
+                </a>
             </div>
         </div>
 
-        <hr class="my-4 border-gray-800">
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
-            <div>
-                <p class="mb-2"><span class="font-semibold text-gray-200">Contactpersoon:</span> {{ $customer->contact_name ?? '-' }}</p>
-                <p class="mb-2"><span class="font-semibold text-gray-200">Email:</span> {{ $customer->contact_email ?? '-' }}</p>
-                <p class="mb-2"><span class="font-semibold text-gray-200">Telefoon:</span> {{ $customer->contact_phone ?? '-' }}</p>
+        {{-- QUICK STATS --}}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+                <p class="text-sm text-gray-400">Contracten</p>
+                <p class="text-2xl font-bold text-yellow-300">{{ $customer->contracts->count() }}</p>
             </div>
 
-            <div>
-                <p class="mb-2"><span class="font-semibold text-gray-200">Status:</span> {{ $customer->status ?? '-' }}</p>
-                <p class="mb-2"><span class="font-semibold text-gray-200">Aangemaakt door (user id):</span> {{ $customer->created_by ?? '-' }}</p>
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+                <p class="text-sm text-gray-400">Bestellingen</p>
+                <p class="text-2xl font-bold text-yellow-300">{{ $customer->orders->count() }}</p>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+                <p class="text-sm text-gray-400">Facturen</p>
+                <p class="text-2xl font-bold text-yellow-300">{{ $customer->invoices->count() }}</p>
+            </div>
+
+            <div class="bg-gray-800 rounded-xl p-4 text-center">
+                <p class="text-sm text-gray-400">Afspraken</p>
+                <p class="text-2xl font-bold text-yellow-300">{{ $customer->appointments->count() }}</p>
             </div>
         </div>
+    </div>
 
-        <hr class="my-4 border-gray-800">
-
-        <div class="text-sm text-gray-400">
-            <p class="mb-2"><span class="font-semibold text-gray-200">Invoice address id:</span>
-                @if($customer->invoice_address_id)
-                    @if(is_numeric($customer->invoice_address_id))
-                        <a href="{{ url('/addresses/' . $customer->invoice_address_id) }}" class="text-yellow-300 hover:underline">#{{ $customer->invoice_address_id }}</a>
-                    @else
-                        {{ $customer->invoice_address_id }}
-                    @endif
-                @else
-                    -
-                @endif
-            </p>
-
-            <p class="mb-2"><span class="font-semibold text-gray-200">Delivery address id:</span>
-                @if($customer->delivery_address_id)
-                    @if(is_numeric($customer->delivery_address_id))
-                        <a href="{{ url('/addresses/' . $customer->delivery_address_id) }}" class="text-yellow-300 hover:underline">#{{ $customer->delivery_address_id }}</a>
-                    @else
-                        {{ $customer->delivery_address_id }}
-                    @endif
-                @else
-                    -
-                @endif
-            </p>
-
-            <p class="mb-2"><span class="font-semibold text-gray-200">Bron:</span>
-                {{ $customer->source ? ucfirst($customer->source) : '-' }}
-                @if($customer->source_url)
-                    — <a href="{{ $customer->source_url }}" target="_blank" class="text-yellow-300 hover:underline">bron</a>
-                @endif
-            </p>
+    {{-- TABS --}}
+    <div class="bg-gray-900 rounded-2xl border border-gray-800 shadow-lg">
+        <div class="border-b border-gray-800 flex gap-6 px-6 pt-4 text-sm font-medium">
+            <button data-tab="contracts" class="tab-btn text-yellow-400 border-b-2 border-yellow-400 pb-3">
+                Contracten
+            </button>
+            <button data-tab="orders" class="tab-btn text-gray-400 pb-3">
+                Bestellingen
+            </button>
+            <button data-tab="invoices" class="tab-btn text-gray-400 pb-3">
+                Facturen
+            </button>
+            <button data-tab="appointments" class="tab-btn text-gray-400 pb-3">
+                Afspraken
+            </button>
         </div>
 
-        <div class="mt-6 flex gap-3">
-            <a href="{{ route('customers.create') }}" class="px-4 py-2 bg-gray-800 border border-yellow-400/30 text-yellow-300 rounded-lg hover:bg-gray-850">Aanmaken</a>
-            <a href="{{ url('/') }}" class="px-4 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-850">Terug</a>
+        <div class="p-6 space-y-10">
+
+            {{-- CONTRACTEN --}}
+            <section id="contracts" class="tab-content">
+                <h2 class="text-xl font-semibold text-yellow-400 mb-4">Contracten</h2>
+
+                @forelse($customer->contracts as $contract)
+                    <div class="bg-gray-800 rounded-lg p-4 mb-3">
+                        <p class="font-medium">Contract #{{ $contract->id }}</p>
+                        <p class="text-sm text-gray-400">Status: {{ $contract->status ?? '-' }}</p>
+                    </div>
+                @empty
+                    <p class="text-gray-500 italic">Geen contracten gevonden.</p>
+                @endforelse
+            </section>
+
+            {{-- BESTELLINGEN --}}
+            <section id="orders" class="tab-content hidden">
+                <h2 class="text-xl font-semibold text-yellow-400 mb-4">Bestellingen</h2>
+
+                @forelse($customer->orders as $order)
+                    <div class="bg-gray-800 rounded-lg p-4 mb-3">
+                        <p class="font-medium">Bestelling #{{ $order->id }}</p>
+                        <p class="text-sm text-gray-400">Status: {{ $order->status ?? '-' }}</p>
+                    </div>
+                @empty
+                    <p class="text-gray-500 italic">Geen bestellingen gevonden.</p>
+                @endforelse
+            </section>
+
+            {{-- FACTUREN --}}
+            <section id="invoices" class="tab-content hidden">
+                <h2 class="text-xl font-semibold text-yellow-400 mb-4">Facturen</h2>
+
+                @forelse($customer->invoices as $invoice)
+                    <div class="bg-gray-800 rounded-lg p-4 mb-3">
+                        <p class="font-medium">Factuur #{{ $invoice->id }}</p>
+                        <p class="text-sm text-gray-400">
+                            Bedrag: €{{ number_format($invoice->total ?? 0, 2, ',', '.') }}
+                        </p>
+                    </div>
+                @empty
+                    <p class="text-gray-500 italic">Geen facturen gevonden.</p>
+                @endforelse
+            </section>
+
+            {{-- AFSPRAKEN --}}
+            <section id="appointments" class="tab-content hidden">
+                <h2 class="text-xl font-semibold text-yellow-400 mb-4">Afspraken</h2>
+
+                @forelse($customer->appointments as $appointment)
+                    <div class="bg-gray-800 rounded-lg p-4 mb-3">
+                        <p class="font-medium">Afspraak #{{ $appointment->id }}</p>
+                        <p class="text-sm text-gray-400">
+                            Datum: {{ $appointment->date ?? '-' }} |
+                            Status: {{ $appointment->status ?? '-' }}
+                        </p>
+                    </div>
+                @empty
+                    <p class="text-gray-500 italic">Geen afspraken gevonden.</p>
+                @endforelse
+            </section>
+
         </div>
     </div>
 </div>
+
+{{-- TAB SCRIPT --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const buttons = document.querySelectorAll('.tab-btn');
+        const tabs = document.querySelectorAll('.tab-content');
+
+        buttons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = btn.dataset.tab;
+
+                buttons.forEach(b => {
+                    b.classList.remove('text-yellow-400', 'border-yellow-400');
+                    b.classList.add('text-gray-400');
+                });
+
+                tabs.forEach(tab => tab.classList.add('hidden'));
+
+                btn.classList.add('text-yellow-400', 'border-yellow-400');
+                btn.classList.remove('text-gray-400');
+                document.getElementById(target).classList.remove('hidden');
+            });
+        });
+    });
+</script>
 @endsection
