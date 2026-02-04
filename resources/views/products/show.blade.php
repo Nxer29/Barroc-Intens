@@ -1,15 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
-<x-ui.header title="{{ $product->name }}">
-    <x-ui.button
-        variant="outline"
-        class="border-gray-300 text-gray-800 hover:bg-gray-200 hover:text-gray-900"
-        onclick="history.back()"
-    >
-        Terug
-    </x-ui.button>
-</x-ui.header>
+    <x-ui.header title="{{ $product->name }}">
+        <x-ui.button
+            variant="outline"
+            class="border-gray-300 text-gray-800 hover:bg-gray-200 hover:text-gray-900"
+            onclick="location.href='{{ route('products.index') }}'">
+            Terug naar lijst
+        </x-ui.button>
+        </x-ui.header>
 
 <main class="max-w-4xl mx-auto p-6">
     <x-ui.card class="bg-white text-gray-900">

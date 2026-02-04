@@ -71,6 +71,7 @@
                 </div>
             </div>
 
+
             <div>
                 <h3 class="text-lg font-semibold text-yellow-300 mb-3">Producten</h3>
 
@@ -82,26 +83,33 @@
                     @foreach($products as $p)
                         @php
                             $checked = (isset($contract) && $contract->products->contains('id', $p->id)) || in_array($p->id, (array) old('products', []));
-                            $oldQuantities = old('quantities', []);
-                            $oldUnitPrices = old('unit_prices', []);
-                            $index = array_search($p->id, old('products', []));
+                            $existing = isset($contract) ? $contract->products->keyBy('id') : collect();
                         @endphp
 
                         <div class="flex items-center gap-4 bg-gray-850 rounded p-3 border border-gray-800">
                             <div class="flex items-center gap-3 w-1/2">
-                                <input type="checkbox" name="products[]" value="{{ $p->id }}" id="prod-{{ $p->id }}" class="h-4 w-4 text-yellow-400" {{ $checked ? 'checked' : '' }}>
+                                <input type="checkbox"
+                                       name="products[]"
+                                       value="{{ $p->id }}"
+                                       id="prod-{{ $p->id }}"
+                                       class="h-4 w-4 text-yellow-400"
+                                    {{ $checked ? 'checked' : '' }}>
                                 <label for="prod-{{ $p->id }}" class="text-gray-200 font-medium">{{ $p->name }}</label>
                             </div>
 
                             <div class="flex items-center gap-3 ml-auto">
                                 <div class="text-sm text-gray-400">Prijs</div>
-                                <input type="number" name="unit_prices[]" step="0.01"
-                                       value="{{ old('unit_prices')[$index] ?? $p->price ?? '' }}"
+                                <input type="number"
+                                       name="unit_prices[{{ $p->id }}]"
+                                       step="0.01"
+                                       value="{{ old('unit_prices.' . $p->id, $existing[$p->id]->pivot->unit_price ?? $p->price ?? '') }}"
                                        class="w-28 rounded bg-gray-800 border border-gray-700 px-2 py-1 text-gray-100">
 
                                 <div class="text-sm text-gray-400">Aantal</div>
-                                <input type="number" name="quantities[]" min="1"
-                                       value="{{ old('quantities')[$index] ?? ($existing[$p->id]->pivot->quantity ?? 1) ?? 1 }}"
+                                <input type="number"
+                                       name="quantities[{{ $p->id }}]"
+                                       min="1"
+                                       value="{{ old('quantities.' . $p->id, $existing[$p->id]->pivot->quantity ?? 1) }}"
                                        class="w-20 rounded bg-gray-800 border border-gray-700 px-2 py-1 text-gray-100">
                             </div>
                         </div>
