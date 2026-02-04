@@ -3,10 +3,7 @@
 @section('content')
 <div class="max-w-7xl mx-auto p-8 text-gray-900">
 
-    {{-- Nieuwe CSS voor nette select-pijlen --}}
     <style>
-        /* Verberg native pijlen en voeg een eenvoudige svg-pijl als achtergrond toe.
-           Zorg voor extra padding-right zodat tekst niet onder de pijl komt. */
         .select-with-arrow {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -16,9 +13,7 @@
             background-position: right 0.9rem center;
             background-size: 10px 6px;
             padding-right: 2.25rem;
-            /* ruimte voor de pijl */
         }
-
         .select-with-arrow-xs {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -32,46 +27,40 @@
     </style>
 
     {{-- Header --}}
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h2 class="text-3xl font-bold">
-            Factuuroverzicht
-        </h2>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h2 class="text-3xl font-bold">Factuuroverzicht</h2>
 
-        <a
-            href="{{ route('invoices.create') }}"
-            class="inline-flex items-center justify-center
-                   bg-yellow-400 hover:bg-yellow-500
-                   text-black font-semibold
-                   px-6 py-3 rounded-lg
-                   transition">
+        <a href="{{ route('invoices.create') }}"
+           class="inline-flex items-center justify-center bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-6 py-3 rounded-lg transition shadow-sm">
             + Nieuwe factuur
         </a>
     </div>
 
+    {{-- Success melding --}}
+    @if (session('success'))
+        <div id="success-alert" class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 flex items-center gap-2">
+            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-700">✓</span>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
     {{-- Filters --}}
     <form method="GET" class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <input
-            name="customer"
-            value="{{ request('customer') }}"
-            placeholder="Klantnaam"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2
-                   focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+        <input name="customer"
+               value="{{ request('customer') }}"
+               placeholder="Klantnaam"
+               class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
 
-        <select
-            name="status"
-            class="w-full rounded-lg border border-gray-300 px-4 py-2 select-with-arrow
-                   focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+        <select name="status"
+                class="w-full rounded-lg border border-gray-300 px-4 py-2 select-with-arrow focus:ring-2 focus:ring-yellow-400 focus:outline-none">
             <option value="">Factuurstatus</option>
-            <option value="concept" @selected(request('status')==='concept' )>Concept</option>
-            <option value="onbetald" @selected(request('status')==='onbetald' )>Onbetaald</option>
-            <option value="betaald" @selected(request('status')==='betaald' )>Betaald</option>
+            <option value="concept" @selected(request('status')==='concept')>Concept</option>
+            <option value="onbetald" @selected(request('status')==='onbetald')>Onbetaald</option>
+            <option value="betaald" @selected(request('status')==='betaald')>Betaald</option>
         </select>
 
-        <button
-            type="submit"
-            class="bg-yellow-400 hover:bg-yellow-500
-                   text-black font-semibold
-                   px-5 py-2 rounded-lg transition">
+        <button type="submit"
+                class="bg-yellow-400 hover:bg-yellow-500 text-black font-semibold px-5 py-2 rounded-lg transition shadow-sm">
             Filter
         </button>
     </form>
@@ -91,149 +80,91 @@
 
             <tbody class="divide-y divide-gray-200">
                 @forelse($invoices as $invoice)
-                <tr class="hover:bg-gray-900">
-                    <td class="py-3 px-4">{{ $invoice->invoice_number }}</td>
-                    <td class="py-3 px-4">{{ $invoice->customer->company_name ?? '-' }}</td>
-                    <td class="py-3 px-4">€ {{ number_format($invoice->total_amount,2,',','.') }}</td>
-                    <td class="py-3 px-4">
-                        @if($invoice->status === 'betaald')
-                        <span class="bg-green-600 text-white rounded px-2.5 py-1 text-sm">Betaald</span>
-                        @elseif($invoice->status === 'onbetald')
-                        <span class="bg-yellow-500 text-black rounded px-2.5 py-1 text-sm">Onbetaald</span>
-                        @else
-                        <span class="bg-gray-500 text-white rounded px-2.5 py-1 text-sm">{{ ucfirst($invoice->status) }}</span>
-                        @endif
-                    </td>
-                    <td class="py-3 px-4">
-                        <div class="flex flex-wrap items-center gap-3">
-                            <a href="{{ route('invoices.show', $invoice->id) }}" class="text-yellow-400 text-base">Bekijk</a>
+                    <tr class="transition {{ $invoice->status === 'onbetald' ? 'bg-red-50 hover:bg-red-100' : 'hover:bg-gray-50' }}">
+                        <td class="py-3 px-4">{{ $invoice->invoice_number }}</td>
+                        <td class="py-3 px-4">{{ $invoice->customer->company_name ?? '-' }}</td>
+                        <td class="py-3 px-4 font-medium">€ {{ number_format($invoice->total_amount, 2, ',', '.') }}</td>
+                        <td class="py-3 px-4">
+                            @if($invoice->status === 'betaald')
+                                <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                    ● Betaald
+                                </span>
+                            @elseif($invoice->status === 'onbetald')
+                                <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                    ● Onbetaald
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold">
+                                    ● Concept
+                                </span>
+                            @endif
+                        </td>
+                        <td class="py-3 px-4">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <a href="{{ route('invoices.show', $invoice->id) }}"
+                                   class="text-yellow-600 hover:underline font-medium">
+                                    Bekijk
+                                </a>
 
-                            <a href="{{ route('invoices.pdf', $invoice->id) }}" class="border border-yellow-400 text-yellow-300 px-3 py-1.5 rounded text-sm">
-                                PDF
-                            </a>
+                                <a href="{{ route('invoices.pdf', $invoice->id) }}"
+                                   class="border border-yellow-400 text-yellow-700 hover:bg-yellow-50 px-3 py-1.5 rounded text-xs transition">
+                                    PDF
+                                </a>
 
-                            <form method="POST" action="{{ route('invoices.send', $invoice->id) }}">
-                                @csrf
-                                <button type="submit" class="border border-yellow-400 text-yellow-300 px-3 py-1.5 rounded text-sm">
-                                    Mail
-                                </button>
-                            </form>
+                                <form method="POST" action="{{ route('invoices.send', $invoice->id) }}">
+                                    @csrf
+                                    <button type="submit"
+                                            class="border border-yellow-400 text-yellow-700 hover:bg-yellow-50 px-3 py-1.5 rounded text-xs transition">
+                                        Mail
+                                    </button>
+                                </form>
 
-                            <form method="POST" action="{{ route('invoices.status', $invoice->id) }}" class="flex items-center gap-2">
-                                @csrf
-                                @method('PATCH')
-                                <select name="status" class="form-input text-sm py-1.5 px-2.5">
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="py-3 px-4">
-                        {{ $invoice->invoice_number }}
-                    </td>
+                                <form method="POST" action="{{ route('invoices.status', $invoice->id) }}" class="flex items-center gap-2">
+                                    @csrf
+                                    @method('PATCH')
+                                    <select name="status" class="rounded border border-gray-300 px-2 py-1 text-xs select-with-arrow-xs w-28">
+                                        <option value="concept" @selected($invoice->status === 'concept')>Concept</option>
+                                        <option value="onbetald" @selected($invoice->status === 'onbetald')>Onbetaald</option>
+                                        <option value="betaald" @selected($invoice->status === 'betaald')>Betaald</option>
+                                    </select>
+                                    <button type="submit"
+                                            class="bg-yellow-400 hover:bg-yellow-500 text-black text-xs font-semibold px-3 py-1.5 rounded transition shadow-sm">
+                                        Opslaan
+                                    </button>
+                                </form>
 
-                    <td class="py-3 px-4">
-                        {{ $invoice->customer->company_name ?? '-' }}
-                    </td>
-
-                    <td class="py-3 px-4 font-medium">
-                        € {{ number_format($invoice->total_amount, 2, ',', '.') }}
-                    </td>
-
-                    <td class="py-3 px-4">
-                        @if($invoice->status === 'betaald')
-                        <span class="bg-green-600 text-white px-3 py-1 rounded-full text-xs">
-                            Betaald
-                        </span>
-                        @elseif($invoice->status === 'onbetald')
-                        <span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs">
-                            Onbetaald
-                        </span>
-                        @else
-                        <span class="bg-gray-400 text-white px-3 py-1 rounded-full text-xs">
-                            Concept
-                        </span>
-                        @endif
-                    </td>
-
-                    <td class="py-3 px-4">
-                        <div class="flex flex-wrap items-center gap-3">
-
-                            <a
-                                href="{{ route('invoices.show', $invoice->id) }}"
-                                class="text-yellow-600 hover:underline font-medium">
-                                Bekijk
-                            </a>
-
-                            <form
-                                method="POST"
-                                action="{{ route('invoices.status', $invoice->id) }}"
-                                class="flex items-center gap-2">
-                                @csrf
-                                @method('PATCH')
-
-                                <select
-                                    name="status"
-                                    class="rounded border border-gray-300 px-2 py-1 text-xs select-with-arrow-xs w-28">
-                                    <option value="concept" @selected($invoice->status === 'concept')>Concept</option>
-                                    <option value="onbetald" @selected($invoice->status === 'onbetald')>Onbetaald</option>
-                                    <option value="betaald" @selected($invoice->status === 'betaald')>Betaald</option>
-                                </select>
-                                <button type="submit" class="bg-yellow-400 text-black px-3 py-1.5 rounded text-sm font-semibold">
-
-                                <button
-                                    type="submit"
-                                    class="bg-yellow-400 hover:bg-yellow-500
-                                               text-black text-xs font-semibold
-                                               px-3 py-1.5 rounded transition">
-                                    Opslaan
-                                </button>
-                            </form>
-
-                            <form method="POST" action="{{ route('invoices.destroy', $invoice->id) }}" onsubmit="return confirm('Factuur definitief verwijderen?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="border border-red-500 text-red-300 px-3 py-1.5 rounded text-sm hover:bg-red-500/10">
-                                    Verwijder
-                                </button>
-                            </form>
-                            <form
-                                method="POST"
-                                action="{{ route('invoices.destroy', $invoice->id) }}"
-                                onsubmit="return confirm('Factuur definitief verwijderen?')">
-                                @csrf
-                                @method('DELETE')
-
-                                <button
-                                    type="submit"
-                                    class="border border-red-500 text-red-600
-                                               px-3 py-1.5 rounded text-xs
-                                               hover:bg-red-50 transition">
-                                    Verwijder
-                                </button>
-                            </form>
-
-                        </div>
-                    </td>
-                </tr>
+                                <form method="POST" action="{{ route('invoices.destroy', $invoice->id) }}"
+                                      onsubmit="return confirm('Factuur definitief verwijderen?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            class="border border-red-500 text-red-600 hover:bg-red-50 px-3 py-1.5 rounded text-xs transition">
+                                        Verwijder
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
                 @empty
-                <tr>
-                    <td class="py-5 px-4 text-center text-gray-400" colspan="5">Geen facturen gevonden.</td>
-                    <td colspan="5" class="py-6 text-center text-gray-500">
-                        Geen facturen gevonden.
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="5" class="py-6 text-center text-gray-500">Geen facturen gevonden.</td>
+                    </tr>
                 @endforelse
             </tbody>
         </table>
 
-        @if (session('success'))
-        <div class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-            {{ session('success') }}
-        </div>
-        @endif
-
-        <div class="p-5">
-        {{-- Pagination --}}
         <div class="p-4">
             {{ $invoices->links() }}
         </div>
     </div>
 </div>
+
+@if (session('success'))
+<script>
+    setTimeout(() => {
+        const el = document.getElementById('success-alert');
+        if (el) el.remove();
+    }, 3000);
+</script>
+@endif
 @endsection
