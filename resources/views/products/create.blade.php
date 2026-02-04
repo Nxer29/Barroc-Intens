@@ -5,6 +5,7 @@
         <x-ui.button
             variant="outline"
             class="border-gray-300 text-gray-800 hover:bg-gray-200 hover:text-gray-900"
+            style="color: #ffffff !important;"
             onclick="location.href='{{ route('products.index') }}'"
         >
             Terug naar lijst
