@@ -21,6 +21,7 @@
             @endforeach
         </select>
         <button type="submit" class="bg-yellow-400 px-4 py-2 rounded">Filter</button>
+        <a href="{{ route('invoices.create') }}" class="bg-yellow-400 px-4 py-2 rounded text-black">Nieuwe factuur</a>
     </form>
 
     <div class="overflow-x-auto bg-white/5 rounded border border-yellow-400/30">
@@ -52,7 +53,7 @@
                             @endif
                         </td>
                         <td class="py-2 px-4">
-                            <a href="{{ route('invoices.show', $invoice->id) }}" class="text-yellow-400">Bekijk</a>
+                           <a href="{{ route('invoices.show', $invoice->id) }}" class="text-yellow-400">Bekijk</a>
                         </td>
                     </tr>
                 @empty

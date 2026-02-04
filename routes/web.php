@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
 use App\Http\Controllers\NotesController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -120,10 +121,7 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
         ->whereNumber('product')
         ->name('inventory.change.post');
 
-    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
-
-
-
+    
     // ============================
     // 🗓️ Planner — Afspraken (Appointments UI)
     // ============================
@@ -152,6 +150,15 @@ Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
         ->whereNumber('appointment')
         ->name('appointments.destroy');
 
+    // ============================
+    // 🗒️ Facturen (Invoices)
+    // ============================
+    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
+    Route::get('/facturen/nieuw', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/facturen', [InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/facturen/{invoice}', [InvoiceController::class, 'show'])
+    ->whereNumber('invoice')
+    ->name('invoices.show');
 
 
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
