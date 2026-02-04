@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+<<<<<<< Updated upstream
+=======
+use App\Models\MaterialsUsed;
+use App\Observers\MaterialsUsedObserver;
+>>>>>>> Stashed changes
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
