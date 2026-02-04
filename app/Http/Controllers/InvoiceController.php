@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InvoicePdfMail;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\InvoiceLine;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class InvoiceController extends Controller
 {
@@ -94,5 +97,26 @@ class InvoiceController extends Controller
         return redirect()
             ->route('invoices.overview')
             ->with('success', 'Factuur verwijderd.');
+    }
+
+    public function downloadPdf(Invoice $invoice)
+    {
+        $invoice->load(['customer', 'lines']);
+
+        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
+
+        return $pdf->download('factuur-' . $invoice->invoice_number . '.pdf');
+    }
+
+    public function sendPdf(Invoice $invoice)
+    {
+        $invoice->load(['customer', 'lines']);
+
+        $pdf = Pdf::loadView('invoices.pdf', compact('invoice'));
+
+        Mail::to($invoice->customer->contact_email)
+            ->send(new InvoicePdfMail($invoice, $pdf->output()));
+
+        return back()->with('success', 'Factuur per e-mail verstuurd.');
     }
 }

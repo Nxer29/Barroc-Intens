@@ -91,6 +91,38 @@
 
             <tbody class="divide-y divide-gray-200">
                 @forelse($invoices as $invoice)
+                <tr class="hover:bg-gray-900">
+                    <td class="py-3 px-4">{{ $invoice->invoice_number }}</td>
+                    <td class="py-3 px-4">{{ $invoice->customer->company_name ?? '-' }}</td>
+                    <td class="py-3 px-4">€ {{ number_format($invoice->total_amount,2,',','.') }}</td>
+                    <td class="py-3 px-4">
+                        @if($invoice->status === 'betaald')
+                        <span class="bg-green-600 text-white rounded px-2.5 py-1 text-sm">Betaald</span>
+                        @elseif($invoice->status === 'onbetald')
+                        <span class="bg-yellow-500 text-black rounded px-2.5 py-1 text-sm">Onbetaald</span>
+                        @else
+                        <span class="bg-gray-500 text-white rounded px-2.5 py-1 text-sm">{{ ucfirst($invoice->status) }}</span>
+                        @endif
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <a href="{{ route('invoices.show', $invoice->id) }}" class="text-yellow-400 text-base">Bekijk</a>
+
+                            <a href="{{ route('invoices.pdf', $invoice->id) }}" class="border border-yellow-400 text-yellow-300 px-3 py-1.5 rounded text-sm">
+                                PDF
+                            </a>
+
+                            <form method="POST" action="{{ route('invoices.send', $invoice->id) }}">
+                                @csrf
+                                <button type="submit" class="border border-yellow-400 text-yellow-300 px-3 py-1.5 rounded text-sm">
+                                    Mail
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{{ route('invoices.status', $invoice->id) }}" class="flex items-center gap-2">
+                                @csrf
+                                @method('PATCH')
+                                <select name="status" class="form-input text-sm py-1.5 px-2.5">
                 <tr class="hover:bg-gray-50 transition">
                     <td class="py-3 px-4">
                         {{ $invoice->invoice_number }}
@@ -143,6 +175,7 @@
                                     <option value="onbetald" @selected($invoice->status === 'onbetald')>Onbetaald</option>
                                     <option value="betaald" @selected($invoice->status === 'betaald')>Betaald</option>
                                 </select>
+                                <button type="submit" class="bg-yellow-400 text-black px-3 py-1.5 rounded text-sm font-semibold">
 
                                 <button
                                     type="submit"
@@ -153,6 +186,13 @@
                                 </button>
                             </form>
 
+                            <form method="POST" action="{{ route('invoices.destroy', $invoice->id) }}" onsubmit="return confirm('Factuur definitief verwijderen?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="border border-red-500 text-red-300 px-3 py-1.5 rounded text-sm hover:bg-red-500/10">
+                                    Verwijder
+                                </button>
+                            </form>
                             <form
                                 method="POST"
                                 action="{{ route('invoices.destroy', $invoice->id) }}"
@@ -174,6 +214,7 @@
                 </tr>
                 @empty
                 <tr>
+                    <td class="py-5 px-4 text-center text-gray-400" colspan="5">Geen facturen gevonden.</td>
                     <td colspan="5" class="py-6 text-center text-gray-500">
                         Geen facturen gevonden.
                     </td>
@@ -182,6 +223,13 @@
             </tbody>
         </table>
 
+        @if (session('success'))
+        <div class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        <div class="p-5">
         {{-- Pagination --}}
         <div class="p-4">
             {{ $invoices->links() }}
