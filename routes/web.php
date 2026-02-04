@@ -188,6 +188,13 @@ Route::get('/', function () {
     Route::get('/facturen/{invoice}', [InvoiceController::class, 'show'])
     ->whereNumber('invoice')
     ->name('invoices.show');
+    Route::patch('/facturen/{invoice}/status', [InvoiceController::class, 'updateStatus'])
+    ->whereNumber('invoice')
+    ->name('invoices.status');
+
+    Route::delete('/facturen/{invoice}', [InvoiceController::class, 'destroy'])
+    ->whereNumber('invoice')
+    ->name('invoices.destroy');
 // ============================
 //  Maintenance – Storingsaanvragen
 // ============================
