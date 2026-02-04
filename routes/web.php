@@ -46,36 +46,30 @@ Route::get('/', function () {
     // ============================
     // 📦 Producten
     // ============================
-    Route::get('/products', [ProductController::class, 'index'])
-        ->name('products.index');
+Route::get('/products', [ProductController::class, 'index'])
+    ->name('products.index');
 
-    Route::get('/products/create', [ProductController::class, 'create'])
-        ->name('products.create');
+Route::get('/products/create', [ProductController::class, 'create'])
+    ->name('products.create');
 
-    Route::post('/products', [ProductController::class, 'store'])
-        ->name('products.store');
+Route::post('/products', [ProductController::class, 'store'])
+    ->name('products.store');
 
-    Route::get('/products/edit', [ProductController::class, 'edit'])
+Route::get('/products/{product}', [ProductController::class, 'show'])
+    ->whereNumber('product')
+    ->name('products.show');
+
+Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
+    ->whereNumber('product')
     ->name('products.edit');
 
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
-    ->name('products.edit');
+Route::put('/products/{product}', [ProductController::class, 'update'])
+    ->whereNumber('product')
+    ->name('products.update');
 
-    Route::patch('/products/{product}', [ProductController::class, 'edit'])
-    ->name('products.edit');
-
-    Route::get('/products/{product}', [ProductController::class, 'show'])
-        ->whereNumber('product')
-        ->name('products.show');
-
-
-    Route::patch('/products/{product}', [ProductController::class, 'edit'])
-    ->name('products.edit');
-
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
-    ->name('products.edit');
-
-    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+    ->whereNumber('product')
+    ->name('products.destroy');
 
 
     // ============================

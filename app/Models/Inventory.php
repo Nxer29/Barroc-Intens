@@ -17,4 +17,8 @@ class Inventory extends Model
     {
         return $this->quantity < $this->min_threshold;
     }
+    public function inventory()
+    {
+        return $this->hasOne(\App\Models\Inventory::class);
+    }
 }

@@ -2,23 +2,20 @@
 
 namespace App\Providers;
 
+use App\Models\MaterialsUsed;
+use App\Observers\MaterialsUsedObserver;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        //
+        MaterialsUsed::observe(MaterialsUsedObserver::class);
     }
 }

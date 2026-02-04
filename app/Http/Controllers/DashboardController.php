@@ -81,7 +81,11 @@ class DashboardController extends Controller
                     'value' => Product::count(),
                     'route' => 'products.index',
                 ],
-
+                [
+                    'title' => 'Storingformulier',
+                    'value' => '',
+                    'route' => 'maintenance.requests.index',
+                 ],
                 // ADMIN EXTRA
                 [
                     'title' => 'Admin dashboard',
