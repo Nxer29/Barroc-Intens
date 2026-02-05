@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
 use App\Http\Controllers\NotesController;
 use App\Http\Controllers\InvoiceController;
+use Illuminate\Http\Request;
+use App\Models\Customer;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,21 +33,21 @@ Route::get('/', function () {
 // 🔐 Alleen voor ingelogde gebruikers
 
 
-    Route::group(['middleware' => ['role:Admin']], function () {
-        Route::get('/admin-dashboard/users', [AdminController::class, 'users'])->name('admin-dashboard.users');
-        Route::resource('admin-dashboard', AdminController::class);
-        Route::post('/admin/users/roles/{id}', [AdminController::class, 'toggleRole']);
-    });
-    // ============================
-    // 🏠 Dashboard
-    // ============================
-    Route::get('/dashboard', [DashboardController::class, 'index'])
-        ->name('dashboard');
+Route::group(['middleware' => ['role:Admin']], function () {
+    Route::get('/admin-dashboard/users', [AdminController::class, 'users'])->name('admin-dashboard.users');
+    Route::resource('admin-dashboard', AdminController::class);
+    Route::post('/admin/users/roles/{id}', [AdminController::class, 'toggleRole']);
+});
+// ============================
+// 🏠 Dashboard
+// ============================
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
 
 
-    // ============================
-    // 📦 Producten
-    // ============================
+// ============================
+// 📦 Producten
+// ============================
 Route::get('/products', [ProductController::class, 'index'])
     ->name('products.index');
 
@@ -72,129 +74,129 @@ Route::delete('/products/{product}', [ProductController::class, 'destroy'])
     ->name('products.destroy');
 
 
-    // ============================
-    // 📚 Styleguide (Story 1.2)
-    // ============================
-    Route::view('/styleguide', 'pages.styleguide')
-        ->name('styleguide');
+// ============================
+// 📚 Styleguide (Story 1.2)
+// ============================
+Route::view('/styleguide', 'pages.styleguide')
+    ->name('styleguide');
 
 
-    // ============================
-    // 👤 Profiel
-    // ============================
-    Route::get('/profile', [ProfileController::class, 'edit'])
-        ->name('profile.edit');
+// ============================
+// 👤 Profiel
+// ============================
+Route::get('/profile', [ProfileController::class, 'edit'])
+    ->name('profile.edit');
 
-    Route::patch('/profile', [ProfileController::class, 'update'])
-        ->name('profile.update');
+Route::patch('/profile', [ProfileController::class, 'update'])
+    ->name('profile.update');
 
-    Route::delete('/profile', [ProfileController::class, 'destroy'])
-        ->name('profile.destroy');
+Route::delete('/profile', [ProfileController::class, 'destroy'])
+    ->name('profile.destroy');
 
- // ============================
-    // 🧑‍💼 Klantenbeheer
-    // ============================
-    Route::get('/customers/index', [CustomerController::class, 'index'])
-        ->name('customers.index');
+// ============================
+// 🧑‍💼 Klantenbeheer
+// ============================
+Route::get('/customers/index', [CustomerController::class, 'index'])
+    ->name('customers.index');
 
-    Route::get('/customers/create', [CustomerController::class, 'create'])
-        ->name('customers.create');
+Route::get('/customers/create', [CustomerController::class, 'create'])
+    ->name('customers.create');
 
-    Route::post('/customers', [CustomerController::class, 'store'])
-        ->name('customers.store');
+Route::post('/customers', [CustomerController::class, 'store'])
+    ->name('customers.store');
 
-    Route::get('/customers/{customer}', [CustomerController::class, 'show'])
-        ->whereNumber('customer')
-        ->name('customers.show');
-
-
-    // ============================
-    // 📄 Contracten
-    // ============================
-    Route::resource('contracts', ContractController::class);
+Route::get('/customers/{customer}', [CustomerController::class, 'show'])
+    ->whereNumber('customer')
+    ->name('customers.show');
 
 
-    // ============================
-    // 📦 Voorraadbeheer (Inventory UI)
-    // ============================
-    Route::get('/inventory', [InventoryUIController::class, 'index'])
-        ->name('inventory.index');
+// ============================
+// 📄 Contracten
+// ============================
+Route::resource('contracts', ContractController::class);
 
-    Route::get('/inventory/{inventory}', [InventoryUIController::class, 'show'])
-        ->whereNumber('inventory')
-        ->name('inventory.show');
 
-    Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
-    Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
+// ============================
+// 📦 Voorraadbeheer (Inventory UI)
+// ============================
+Route::get('/inventory', [InventoryUIController::class, 'index'])
+    ->name('inventory.index');
 
-    Route::get('/inventory/{inventory}/edit', [InventoryUIController::class, 'edit'])
-        ->whereNumber('inventory')
-        ->name('inventory.edit');
+Route::get('/inventory/{inventory}', [InventoryUIController::class, 'show'])
+    ->whereNumber('inventory')
+    ->name('inventory.show');
 
-    Route::put('/inventory/{inventory}', [InventoryUIController::class, 'update'])
-        ->whereNumber('inventory')
-        ->name('inventory.update');
+Route::get('notes', [NotesController::class, 'index'])->name('notes.index');
+Route::post('notes', [NotesController::class, 'store'])->name('notes.store');
 
-    // wijzig voorraad (custom)
-    Route::get('/inventory/change/{product}', [InventoryUIController::class, 'changeStock'])
-        ->whereNumber('product')
-        ->name('inventory.change');
+Route::get('/inventory/{inventory}/edit', [InventoryUIController::class, 'edit'])
+    ->whereNumber('inventory')
+    ->name('inventory.edit');
 
-    Route::post('/inventory/change/{product}', [InventoryUIController::class, 'changeStockPost'])
-        ->whereNumber('product')
-        ->name('inventory.change.post');
+Route::put('/inventory/{inventory}', [InventoryUIController::class, 'update'])
+    ->whereNumber('inventory')
+    ->name('inventory.update');
 
-    
-    // ============================
-    // 🗓️ Planner — Afspraken (Appointments UI)
-    // ============================
-    Route::get('/appointments', [AppointmentUIController::class, 'index'])
-        ->name('appointments.index');
+// wijzig voorraad (custom)
+Route::get('/inventory/change/{product}', [InventoryUIController::class, 'changeStock'])
+    ->whereNumber('product')
+    ->name('inventory.change');
 
-    Route::get('/appointments/create', [AppointmentUIController::class, 'create'])
-        ->name('appointments.create');
+Route::post('/inventory/change/{product}', [InventoryUIController::class, 'changeStockPost'])
+    ->whereNumber('product')
+    ->name('inventory.change.post');
 
-    Route::post('/appointments', [AppointmentUIController::class, 'store'])
-        ->name('appointments.store');
 
-    Route::get('/appointments/{appointment}', [AppointmentUIController::class, 'show'])
-        ->whereNumber('appointment')
-        ->name('appointments.show');
+// ============================
+// 🗓️ Planner — Afspraken (Appointments UI)
+// ============================
+Route::get('/appointments', [AppointmentUIController::class, 'index'])
+    ->name('appointments.index');
 
-    Route::get('/appointments/{appointment}/edit', [AppointmentUIController::class, 'edit'])
-        ->whereNumber('appointment')
-        ->name('appointments.edit');
+Route::get('/appointments/create', [AppointmentUIController::class, 'create'])
+    ->name('appointments.create');
 
-    Route::patch('/appointments/{appointment}', [AppointmentUIController::class, 'update'])
-        ->whereNumber('appointment')
-        ->name('appointments.update');
+Route::post('/appointments', [AppointmentUIController::class, 'store'])
+    ->name('appointments.store');
 
-    Route::delete('/appointments/{appointment}', [AppointmentUIController::class, 'destroy'])
-        ->whereNumber('appointment')
-        ->name('appointments.destroy');
+Route::get('/appointments/{appointment}', [AppointmentUIController::class, 'show'])
+    ->whereNumber('appointment')
+    ->name('appointments.show');
 
-    // ============================
-    // 🗒️ Facturen (Invoices)
-    // ============================
-    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
-    Route::get('/facturen/nieuw', [InvoiceController::class, 'create'])->name('invoices.create');
-    Route::post('/facturen', [InvoiceController::class, 'store'])->name('invoices.store');
-    Route::get('/facturen/{invoice}', [InvoiceController::class, 'show'])
+Route::get('/appointments/{appointment}/edit', [AppointmentUIController::class, 'edit'])
+    ->whereNumber('appointment')
+    ->name('appointments.edit');
+
+Route::patch('/appointments/{appointment}', [AppointmentUIController::class, 'update'])
+    ->whereNumber('appointment')
+    ->name('appointments.update');
+
+Route::delete('/appointments/{appointment}', [AppointmentUIController::class, 'destroy'])
+    ->whereNumber('appointment')
+    ->name('appointments.destroy');
+
+// ============================
+// 🗒️ Facturen (Invoices)
+// ============================
+Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
+Route::get('/facturen/nieuw', [InvoiceController::class, 'create'])->name('invoices.create');
+Route::post('/facturen', [InvoiceController::class, 'store'])->name('invoices.store');
+Route::get('/facturen/{invoice}', [InvoiceController::class, 'show'])
     ->whereNumber('invoice')
     ->name('invoices.show');
-    Route::patch('/facturen/{invoice}/status', [InvoiceController::class, 'updateStatus'])
+Route::patch('/facturen/{invoice}/status', [InvoiceController::class, 'updateStatus'])
     ->whereNumber('invoice')
     ->name('invoices.status');
 
-    Route::delete('/facturen/{invoice}', [InvoiceController::class, 'destroy'])
+Route::delete('/facturen/{invoice}', [InvoiceController::class, 'destroy'])
     ->whereNumber('invoice')
     ->name('invoices.destroy');
 
-    Route::get('/facturen/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])
+Route::get('/facturen/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])
     ->whereNumber('invoice')
     ->name('invoices.pdf');
 
-    Route::post('/facturen/{invoice}/send', [InvoiceController::class, 'sendPdf'])
+Route::post('/facturen/{invoice}/send', [InvoiceController::class, 'sendPdf'])
     ->whereNumber('invoice')
     ->name('invoices.send');
 // ============================
@@ -226,4 +228,27 @@ Route::patch(
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
     ->name('customers.notes.update');
 
-require __DIR__.'/auth.php';
+Route::get('/customers/{customer}/edit', function (Customer $customer) {
+    return view('customers.edit', compact('customer'));
+})->name('customers.edit');
+
+Route::put('/customers/{customer}', function (Request $request, Customer $customer) {
+    $data = $request->validate([
+        'company_name'   => 'required|string|max:255',
+        'contact_name'   => 'nullable|string|max:255',
+        'contact_email'  => 'nullable|email|max:255',
+        'contact_phone'  => 'nullable|string|max:50',
+        'status'         => 'nullable|string|max:50',
+    ]);
+
+    $customer->company_name = $data['company_name'];
+    $customer->contact_name = $data['contact_name'] ?? null;
+    $customer->contact_email = $data['contact_email'] ?? null;
+    $customer->contact_phone = $data['contact_phone'] ?? null;
+    $customer->status = $data['status'] ?? $customer->status;
+    $customer->save();
+
+    return redirect()->route('customers.index')->with('success', 'Klant bijgewerkt.');
+})->name('customers.update');
+
+require __DIR__ . '/auth.php';
