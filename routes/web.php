@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
 use App\Http\Controllers\NotesController;
+use App\Http\Controllers\InvoiceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,36 +46,30 @@ Route::get('/', function () {
     // ============================
     // 📦 Producten
     // ============================
-    Route::get('/products', [ProductController::class, 'index'])
-        ->name('products.index');
+Route::get('/products', [ProductController::class, 'index'])
+    ->name('products.index');
 
-    Route::get('/products/create', [ProductController::class, 'create'])
-        ->name('products.create');
+Route::get('/products/create', [ProductController::class, 'create'])
+    ->name('products.create');
 
-    Route::post('/products', [ProductController::class, 'store'])
-        ->name('products.store');
+Route::post('/products', [ProductController::class, 'store'])
+    ->name('products.store');
 
-    Route::get('/products/edit', [ProductController::class, 'edit'])
+Route::get('/products/{product}', [ProductController::class, 'show'])
+    ->whereNumber('product')
+    ->name('products.show');
+
+Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
+    ->whereNumber('product')
     ->name('products.edit');
 
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
-    ->name('products.edit');
+Route::put('/products/{product}', [ProductController::class, 'update'])
+    ->whereNumber('product')
+    ->name('products.update');
 
-    Route::patch('/products/{product}', [ProductController::class, 'edit'])
-    ->name('products.edit');
-
-    Route::get('/products/{product}', [ProductController::class, 'show'])
-        ->whereNumber('product')
-        ->name('products.show');
-
-
-    Route::patch('/products/{product}', [ProductController::class, 'edit'])
-    ->name('products.edit');
-
-    Route::get('/products/{product}/edit', [ProductController::class, 'edit'])
-    ->name('products.edit');
-
-    Route::delete('/products/{product}', [ProductController::class, 'destroy']);
+Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+    ->whereNumber('product')
+    ->name('products.destroy');
 
 
     // ============================
@@ -149,10 +144,7 @@ Route::get('/', function () {
         ->whereNumber('product')
         ->name('inventory.change.post');
 
-    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
-
-
-
+    
     // ============================
     // 🗓️ Planner — Afspraken (Appointments UI)
     // ============================
@@ -181,6 +173,30 @@ Route::get('/', function () {
         ->whereNumber('appointment')
         ->name('appointments.destroy');
 
+    // ============================
+    // 🗒️ Facturen (Invoices)
+    // ============================
+    Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
+    Route::get('/facturen/nieuw', [InvoiceController::class, 'create'])->name('invoices.create');
+    Route::post('/facturen', [InvoiceController::class, 'store'])->name('invoices.store');
+    Route::get('/facturen/{invoice}', [InvoiceController::class, 'show'])
+    ->whereNumber('invoice')
+    ->name('invoices.show');
+    Route::patch('/facturen/{invoice}/status', [InvoiceController::class, 'updateStatus'])
+    ->whereNumber('invoice')
+    ->name('invoices.status');
+
+    Route::delete('/facturen/{invoice}', [InvoiceController::class, 'destroy'])
+    ->whereNumber('invoice')
+    ->name('invoices.destroy');
+
+    Route::get('/facturen/{invoice}/pdf', [InvoiceController::class, 'downloadPdf'])
+    ->whereNumber('invoice')
+    ->name('invoices.pdf');
+
+    Route::post('/facturen/{invoice}/send', [InvoiceController::class, 'sendPdf'])
+    ->whereNumber('invoice')
+    ->name('invoices.send');
 // ============================
 //  Maintenance – Storingsaanvragen
 // ============================

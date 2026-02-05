@@ -24,13 +24,18 @@ class DatabaseSeeder extends Seeder
             AppointmentTypeSeeder::class,
         ]);
 
+        Role::create(['name' => 'Admin']);
+        Role::create(['name' => 'finance']);
+        Role::create(['name' => 'sales']);
+        Role::create(['name' => 'inkoop']);
+        Role::create(['name' => 'maintenance']);
+
+
         $Admin = User::create([
             'name' => 'Admin',
             'email' => 'test@example.com',
             'password' => bcrypt('secret'),
         ]);
-
-
 
         $finance = User::create([
             'name' => 'Finance Medewerker',
@@ -55,13 +60,6 @@ class DatabaseSeeder extends Seeder
             'email' => 'maintenance@example.com',
             'password' => bcrypt('secret'),
         ]);
-
-        Role::create(['name' => 'Admin']);
-        Role::create(['name' => 'finance']);
-        Role::create(['name' => 'sales']);
-        Role::create(['name' => 'inkoop']);
-        Role::create(['name' => 'maintenance']);
-
 
         $Admin->assignRole('Admin');
     }

@@ -14,13 +14,12 @@ class InventoryUIController extends Controller
      */
     public function index()
     {
-        $inventories = Inventory::with(['product.category'])
-            ->orderBy('product_id')
+        $products = Product::with(['category', 'inventory'])
+            ->orderBy('name')
             ->paginate(15);
 
-        return view('inventory.index', compact('inventories'));
+        return view('inventory.index', compact('products'));
     }
-
     /**
      * 🔍 Detailpagina voorraad
      */

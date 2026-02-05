@@ -16,9 +16,11 @@ class InventoryService
         int $change,
         ?string $reason = null,
         ?int $performedByUserId = null,
-        ?string $location = null
+        ?string $location = null,
+        ?string $referenceType = null,
+        ?int $referenceId = null
     ): Inventory {
-        return DB::transaction(function () use ($product, $change, $reason, $performedByUserId, $location) {
+        return DB::transaction(function () use ($product, $change, $reason, $performedByUserId, $location, $referenceType, $referenceId) {
             $inventory = Inventory::firstOrCreate(
                 [
                     'product_id' => $product->id,
@@ -47,8 +49,8 @@ class InventoryService
                 'product_id'     => $product->id,
                 'change'         => $change,
                 'reason'         => $reason,
-                'reference_type' => null,
-                'reference_id'   => null,
+                'reference_type' => $referenceType,
+                'reference_id'   => $referenceId,
                 'performed_by'   => $performedByUserId,
                 'created_at'     => now(),
             ]);

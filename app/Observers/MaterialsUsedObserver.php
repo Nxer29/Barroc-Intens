@@ -40,8 +40,8 @@ class MaterialsUsedObserver
                 (int) $workOrder->id
             );
 
-            // 2) Notificatie naar Inkoop (Spatie Permission)
-            $inkoopUsers = User::role('inkoop')->get();
+            // 2) Notificatie naar Inkoop (rol: inkoop)
+            $inkoopUsers = User::role('inkoop')->get(); // Spatie permission
 
             foreach ($inkoopUsers as $user) {
                 Notification::create([

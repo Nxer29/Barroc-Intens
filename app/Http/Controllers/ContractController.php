@@ -63,10 +63,14 @@ class ContractController extends Controller
             // Sync producten (indien aanwezig)
             if (!empty($data['products']) && is_array($data['products']) && method_exists($contract, 'products')) {
                 $sync = [];
-                foreach ($data['products'] as $i => $pid) {
-                    $quantity = isset($data['quantities'][$i]) ? intval($data['quantities'][$i]) : 1;
-                    $unitPrice = isset($data['unit_prices'][$i]) ? $data['unit_prices'][$i] : null;
-                    $sync[$pid] = ['quantity' => $quantity, 'unit_price' => $unitPrice];
+                foreach ($data['products'] as $pid) {
+                    $quantity  = $data['quantities'][$pid] ?? 1;
+                    $unitPrice = $data['unit_prices'][$pid] ?? null;
+
+                    $sync[$pid] = [
+                        'quantity'   => (int) $quantity,
+                        'unit_price' => $unitPrice,
+                    ];
                 }
                 $contract->products()->sync($sync);
             }
@@ -126,10 +130,14 @@ class ContractController extends Controller
 
             if (isset($data['products']) && is_array($data['products']) && method_exists($contract, 'products')) {
                 $sync = [];
-                foreach ($data['products'] as $i => $pid) {
-                    $quantity = isset($data['quantities'][$i]) ? intval($data['quantities'][$i]) : 1;
-                    $unitPrice = isset($data['unit_prices'][$i]) ? $data['unit_prices'][$i] : null;
-                    $sync[$pid] = ['quantity' => $quantity, 'unit_price' => $unitPrice];
+                foreach ($data['products'] as $pid) {
+                    $quantity  = $data['quantities'][$pid] ?? 1;
+                    $unitPrice = $data['unit_prices'][$pid] ?? null;
+
+                    $sync[$pid] = [
+                        'quantity'   => (int) $quantity,
+                        'unit_price' => $unitPrice,
+                    ];
                 }
                 $contract->products()->sync($sync);
             }
