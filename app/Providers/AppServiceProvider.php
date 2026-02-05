@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Models\MaterialsUsed;
 use App\Observers\MaterialsUsedObserver;
 
+use App\Models\MaterialsUsed;
+use App\Observers\MaterialsUsedObserver;
+
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
