@@ -26,8 +26,8 @@ class AppointmentUIController extends Controller
         $types = AppointmentType::all();
 
         $customers = Customer::orderBy('company_name')
-                             ->orderBy('contact_name')
-                             ->get();
+            ->orderBy('contact_name')
+            ->get();
 
         // Geen rollen → toon alle gebruikers als monteurs
         $technicians = User::all();
@@ -54,18 +54,15 @@ class AppointmentUIController extends Controller
 
     public function show(Appointment $appointment)
     {
-        $appointment->load([
-            'customer.contracts',
-            'customer.addresses',
-            'type',
-            'technician'
-        ]);
+        $appointment->load(['customer.contracts.products', 'type', 'technician']);
 
         $scheduled = Carbon::parse($appointment->scheduled_at);
 
-        // 1) Probeer een maintenance request te vinden die bij deze afspraak past
-        // (zelfde klant + scheduled_at in de buurt + (optioneel) dezelfde monteur)
-        $maintenanceRequest = MaintenanceRequest::with(['product', 'contract'])
+        // Zoek een maintenance request die bij dit bezoek past:
+        // - zelfde klant
+        // - scheduled_at binnen +/- 4 uur
+        // - (optioneel) dezelfde monteur
+        $maintenanceRequest = MaintenanceRequest::with(['product', 'contract.products'])
             ->where('customer_id', $appointment->customer_id)
             ->whereNotNull('scheduled_at')
             ->when($appointment->technician_id, function ($q) use ($appointment) {
@@ -78,9 +75,10 @@ class AppointmentUIController extends Controller
             ->orderByDesc('scheduled_at')
             ->first();
 
-        // 2) Contract referentie bepalen:
-        // - als maintenance request een contract heeft -> die gebruiken
-        // - anders -> laatste actieve contract van klant
+        // Contract bepalen:
+        // 1) contract uit maintenance request
+        // 2) anders: actief contract klant
+        // 3) anders: meest recente contract klant
         $activeContract = null;
 
         if ($maintenanceRequest && $maintenanceRequest->contract) {
@@ -95,7 +93,6 @@ class AppointmentUIController extends Controller
                     ->orderByDesc('start_date')
                     ->first();
 
-                // fallback: als er geen actieve is, pak de meest recente
                 if (!$activeContract) {
                     $activeContract = $customer->contracts()
                         ->with('products')
@@ -113,8 +110,8 @@ class AppointmentUIController extends Controller
         $types = AppointmentType::all();
 
         $customers = Customer::orderBy('company_name')
-                             ->orderBy('contact_name')
-                             ->get();
+            ->orderBy('contact_name')
+            ->get();
 
         // Geen rollen → toon alle gebruikers
         $technicians = User::all();

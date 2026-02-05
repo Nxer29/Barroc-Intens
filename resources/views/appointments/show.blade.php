@@ -2,7 +2,7 @@
 
 @section('content')
 
-<div class="max-w-4xl mx-auto">
+<div class="max-w-5xl mx-auto">
 
     <h1 class="text-3xl font-bold text-yellow-400 mb-6">Bezoekdetails</h1>
 
@@ -23,7 +23,7 @@
 
             @if($maintenanceRequest)
                 <p class="text-gray-400 mt-4 text-sm">
-                    Referentie storingsaanvraag: #{{ $maintenanceRequest->request_number ?? $maintenanceRequest->id }}
+                    Storingsaanvraag: #{{ $maintenanceRequest->request_number ?? $maintenanceRequest->id }}
                 </p>
             @endif
         </div>
@@ -79,7 +79,7 @@
 
             @if($maintenanceRequest && $maintenanceRequest->product)
                 <p class="text-gray-200 mb-4">
-                    <span class="text-yellow-400 font-semibold">Installatie/product:</span>
+                    <span class="text-yellow-400 font-semibold">Product:</span>
                     {{ $maintenanceRequest->product->name }}
                 </p>
             @endif
@@ -96,7 +96,7 @@
                     @endforeach
                 </ul>
                 <p class="text-gray-400 text-sm mt-3">
-                    (Gebaseerd op producten in het contract)
+                    Gebaseerd op de producten in het contract.
                 </p>
             @else
                 <p class="text-gray-400">Geen contractproducten gevonden om als spullenlijst te tonen.</p>
@@ -112,10 +112,12 @@
                     <span class="text-yellow-400 font-semibold">Contract:</span>
                     #{{ $activeContract->id }} — {{ $activeContract->name ?? '—' }}
                 </p>
+
                 <p class="text-gray-200 mt-2">
                     <span class="text-yellow-400 font-semibold">Status:</span>
                     {{ $activeContract->status ?? '—' }}
                 </p>
+
                 <p class="text-gray-200 mt-2">
                     <span class="text-yellow-400 font-semibold">Looptijd:</span>
                     {{ optional($activeContract->start_date)->format('d-m-Y') ?? '—' }}
@@ -131,6 +133,11 @@
             <h3 class="text-lg font-semibold text-yellow-400 mb-2">Afspraak</h3>
 
             <p class="text-gray-200">
+                <span class="text-yellow-400 font-semibold">Klant:</span>
+                {{ $appointment->customer->company_name ?? '—' }}
+            </p>
+
+            <p class="text-gray-200 mt-2">
                 <span class="text-yellow-400 font-semibold">Type:</span>
                 {{ $appointment->type->name ?? '—' }}
             </p>

@@ -5,6 +5,7 @@
     <x-ui.button
         variant="outline"
         class="border-gray-300 text-gray-800 hover:bg-gray-200 hover:text-gray-900"
+        style="color: #ffffff !important;"
         onclick="location.href='{{ route('products.index') }}'"
     >
         Terug naar lijst
@@ -40,17 +41,20 @@
                 value="{{ old('name', $product->name) }}"
                 required
             />
-
-            <x-ui.input
-                label="Categorie"
-                name="category"
-                value="{{ old('category', $product->category) }}"
-            />
-
+            <input type="hidden" name="category_id" value="{{ old('category_id', $product->category_id) }}">
             <x-ui.textarea
                 label="Beschrijving"
                 name="description"
             >{{ old('description', $product->description) }}</x-ui.textarea>
+
+            <x-ui.input
+                label="Unit price (€)"
+                name="unit_price"
+                type="number"
+                step="0.01"
+                value="{{ old('unit_price', $product->unit_price) }}"
+                required
+            />
 
             <x-ui.input
                 label="Prijs (€)"
@@ -58,6 +62,16 @@
                 type="number"
                 step="0.01"
                 value="{{ old('price', $product->price) }}"
+                required
+            />
+
+            <x-ui.input
+                label="Stock"
+                name="stock"
+                type="number"
+                step="1"
+                min="0"
+                value="{{ old('stock', $product->stock) }}"
                 required
             />
 

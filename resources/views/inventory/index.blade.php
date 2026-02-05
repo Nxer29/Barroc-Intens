@@ -20,36 +20,41 @@
         </thead>
 
         <tbody class="bg-white dark:bg-gray-900">
-            @foreach ($inventories as $item)
-                <tr class="border-b border-gray-300 dark:border-gray-800">
-                    <td class="p-4">{{ $item->product->name }}</td>
-                    <td class="p-4">{{ $item->product->category->name ?? '—' }}</td>
+        @foreach ($products as $product)
+            @php
+                $inventory = $product->inventory;
+                $qty = $inventory->quantity ?? 0;
+                $min = $inventory->min_threshold ?? 0;
+                $location = $inventory->location ?? '—';
+            @endphp
 
-                    <td class="p-4 font-semibold">
-                        {{ $item->quantity }}
-                    </td>
+            <tr class="border-b border-gray-300 dark:border-gray-800">
+                <td class="p-4">{{ $product->name }}</td>
+                <td class="p-4">{{ $product->category->name ?? '—' }}</td>
 
-                    <td class="p-4">{{ $item->min_threshold }}</td>
+                <td class="p-4 font-semibold">{{ $qty }}</td>
+                <td class="p-4">{{ $min }}</td>
+                <td class="p-4">{{ $location }}</td>
 
-                    <td class="p-4">{{ $item->location ?? '—' }}</td>
+                <td class="p-4">
+                    @if($qty < $min)
+                        <span class="text-red-500 font-bold">⚠ Te laag</span>
+                    @elseif($qty == $min)
+                        <span class="text-yellow-400 font-bold">Bij drempel</span>
+                    @else
+                        <span class="text-green-500 font-bold">Goed</span>
+                    @endif
+                </td>
 
-                    <td class="p-4">
-                        @if($item->quantity < $item->min_threshold)
-                            <span class="text-red-500 font-bold">⚠ Te laag</span>
-                        @elseif($item->quantity == $item->min_threshold)
-                            <span class="text-yellow-400 font-bold">Bij drempel</span>
-                        @else
-                            <span class="text-green-500 font-bold">Goed</span>
-                        @endif
-                    </td>
-
-                    <td class="p-4 flex gap-3">
-                        <a href="{{ route('inventory.show', $item->id) }}" class="btn-ghost">Bekijken</a>
-                        <a href="{{ route('inventory.edit', $item->id) }}" class="btn-yellow px-3 py-1">Instellingen</a>
-                        <a href="{{ route('inventory.change', $item->product_id) }}" class="btn-yellow px-3 py-1">Voorraad wijzigen</a>
-                    </td>
-                </tr>
-            @endforeach
+                <td class="p-4 flex gap-3">
+                    @if($inventory)
+                        <a href="{{ route('inventory.show', $inventory->id) }}" class="btn-ghost">Bekijken</a>
+                        <a href="{{ route('inventory.edit', $inventory->id) }}" class="btn-yellow px-3 py-1">Instellingen</a>
+                    @endif
+                    <a href="{{ route('inventory.change', $product->id) }}" class="btn-yellow px-3 py-1">Voorraad wijzigen</a>
+                </td>
+            </tr>
+        @endforeach
         </tbody>
     </table>
 </div>

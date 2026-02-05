@@ -49,17 +49,21 @@ class ProductController extends Controller
         return view('products.show', compact('product'));
     }
 
-    public function edit(Request $request, Product $product)
+    public function edit(Product $product)
     {
-        $data = $this->getArr($request);
-
-        $data['is_visible_to_customers'] = $request->boolean('is_visible_to_customers');
-
-        $product->edit($data);
-
-        return redirect()->route('products.edit');
+        return view('products.edit', compact('product'));
     }
 
+    public function update(Request $request, Product $product)
+    {
+        $data = $this->getArr($request);
+        $data['is_visible_to_customers'] = $request->boolean('is_visible_to_customers');
+
+        $product->update($data);
+
+        return redirect()->route('products.show', $product->id)
+            ->with('status', 'Product updated.');
+    }
     public function destroy(Product $product)
     {
         $product->delete();
@@ -74,7 +78,7 @@ class ProductController extends Controller
     public function getArr(Request $request): array
     {
         $data = $request->validate([
-            'sku' => ['required', 'string', 'max:255'],
+            'sku' => ['string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'brand' => ['nullable', 'string', 'max:255'],
             'description' => ['nullable', 'string'],

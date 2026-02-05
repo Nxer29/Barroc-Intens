@@ -1,76 +1,97 @@
 @extends('layouts.app')
 
 @section('content')
+    <x-ui.header title="Nieuw product">
+        <x-ui.button
+            variant="outline"
+            class="border-gray-300 text-gray-800 hover:bg-gray-200 hover:text-gray-900"
+            style="color: #ffffff !important;"
+            onclick="location.href='{{ route('products.index') }}'"
+        >
+            Terug naar lijst
+        </x-ui.button>
+    </x-ui.header>
 
-<x-ui.header title="Nieuw product">
-    <x-ui.button variant="outline" onclick="location.href='{{ route('products.index') }}'">Terug naar lijst</x-ui.button>
-</x-ui.header>
-<main class="max-w-4xl mx-auto p-6">
-    @if($errors->any())
-        <div class="mb-4 p-3 rounded bg-red-900/50 border border-red-700 text-red-200">
-            <strong class="block mb-1">Er zijn fouten:</strong>
-            <ul class="list-disc list-inside text-sm">
-                @foreach($errors->all() as $e)
-                    <li>{{ $e }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+    <main class="max-w-4xl mx-auto p-6">
+        @if ($errors->any())
+            <div class="mb-6 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800">
+                <strong class="block mb-2">Er zijn fouten:</strong>
+                <ul class="list-disc list-inside text-sm space-y-1">
+                    @foreach ($errors->all() as $e)
+                        <li>{{ $e }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <form method="POST" action="{{ route('products.store') }}" class="space-y-6">
-        @csrf
-        <div class="bg-gray-900 rounded-2xl border border-yellow-400/20 p-6">
+        <x-ui.card class="bg-white text-gray-900">
+            <form method="POST" action="{{ route('products.store') }}" class="space-y-5">
+                @csrf
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="sku" name="sku" value="{{old('sku')}}" required/>
-        </div>
+                <x-ui.input label="SKU" name="sku" value="{{ old('sku') }}" />
+                <x-ui.input label="Naam" name="name" value="{{ old('name') }}" required />
+                <x-ui.input label="Brand" name="brand" value="{{ old('brand') }}" />
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="Naam" name="name" value="{{ old('name') }}" required />
-        </div>
+                <x-ui.textarea label="Beschrijving" name="description">
+                    {{ old('description') }}
+                </x-ui.textarea>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="brand" name="brand" value="{{ old('brand') }}" required />
-        </div>
+                <x-ui.input label="Categorie" name="category_id" value="{{ old('category_id') }}" required />
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="Beschrijving" name="description" value="{{ old('description') }}" required textarea />
-        </div>
+                <x-ui.input
+                    label="Unit prijs (€)"
+                    name="unit_price"
+                    type="number"
+                    step="0.01"
+                    value="{{ old('unit_price') }}"
+                    required
+                />
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="Categorie" name="category_id" value="{{ old('category_id') }}" required />
-        </div>
+                <x-ui.input
+                    label="Prijs (€)"
+                    name="price"
+                    type="number"
+                    step="0.01"
+                    value="{{ old('price') }}"
+                    required
+                />
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="Unit prijs" name="unit_price" value="{{ old('unit_price') }}" required />
-        </div>
+                <x-ui.input
+                    label="Voorraad"
+                    name="stock"
+                    type="number"
+                    step="1"
+                    min="0"
+                    value="{{ old('stock') }}"
+                    required
+                />
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="Prijs" name="price" value="{{ old('price') }}" required />
-        </div>
+                <label class="flex items-center gap-3 text-sm text-gray-700">
+                    <input
+                        type="checkbox"
+                        name="is_visible_to_customers"
+                        value="1"
+                        @checked(old('is_visible_to_customers', true))
+                        class="rounded border-gray-300 text-brand focus:ring-brand"
+                    >
+                    <span>Zichtbaar voor klanten</span>
+                </label>
 
-       <div>
-           <label class="block text-sm font-medium text-gray-200"></label>
-           <x-ui.input type="checkbox" label="Zichtbaar" name="is_visible_to_customers" value="1" :checked="old('is_visible_to_customers')" required/>
-       </div>
+                <div class="pt-4 flex justify-end gap-3">
+                    <x-ui.button
+                        variant="outline"
+                        class="border-gray-400 text-gray-800 hover:bg-gray-100"
+                        onclick="location.href='{{ route('products.index') }}'"
+                        type="button"
+                    >
+                        Annuleren
+                    </x-ui.button>
 
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.input label="Voorraad" name="stock" value="{{ old('stock') }}" required />
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-200"></label>
-            <x-ui.button type="submit">Product aanmaken</x-ui.button>
-        </div>
-</div>
-    </form>
-</main>
+                    <x-ui.button class="bg-brand text-white hover:bg-brand-dark" type="submit">
+                        Product aanmaken
+                    </x-ui.button>
+                </div>
+            </form>
+        </x-ui.card>
+    </main>
 @endsection
