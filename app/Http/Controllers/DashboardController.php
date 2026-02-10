@@ -16,19 +16,19 @@ class DashboardController extends Controller
         $user = $request->user();
         $widgets = [];
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN – ziet alles
-        |--------------------------------------------------------------------------
-        */
+        // =========================
+        // ADMIN (ziet alles)
+        // =========================
         if ($user->hasRole('Admin')) {
             $widgets = [
-
-                // =========================
-                // OVERZICHT (status)
-                // =========================
+                // SALES
                 [
-                    'title' => 'Klanten overzicht',
+                    'title' => 'Klanten',
+                    'value' => Customer::count(),
+                    'route' => 'customers.create',
+                ],
+                [
+                    'title' => 'Klanten Overzicht',
                     'value' => Customer::count(),
                     'route' => 'customers.index',
                 ],
@@ -43,23 +43,9 @@ class DashboardController extends Controller
                     'route' => 'appointments.index',
                 ],
                 [
-                    'title' => 'Actieve afspraken',
-                    'value' => Appointment::where('status', 'planned')->count(),
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Factuuroverzicht',
-                    'value' => '',
-                    'route' => 'invoices.overview',
-                ],
-
-                // =========================
-                // ACTIES (toevoegen)
-                // =========================
-                [
-                    'title' => 'Nieuwe klant',
+                    'title' => 'Nieuwe afspraak',
                     'value' => 'Toevoegen',
-                    'route' => 'customers.create',
+                    'route' => 'appointments.create',
                 ],
                 [
                     'title' => 'Nieuw contract',
@@ -67,38 +53,40 @@ class DashboardController extends Controller
                     'route' => 'contracts.create',
                 ],
                 [
-                    'title' => 'Nieuwe afspraak',
-                    'value' => 'Inplannen',
-                    'route' => 'appointments.create',
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
                 ],
 
-                // =========================
-                // OPERATIONEEL
-                // =========================
+                // FINANCE
                 [
-                    'title' => 'Producten',
-                    'value' => Product::count(),
-                    'route' => 'products.index',
+                    'title' => 'Notities',
+                    'value' => 'Overzicht',
+                    'route' => 'notes.index',
                 ],
+                [
+                    'title' => 'Actieve afspraken',
+                    'value' => Appointment::where('status', 'planned')->count(),
+                    'route' => 'appointments.index',
+                ],
+
+                // INKOOP
                 [
                     'title' => 'Voorraaditems',
                     'value' => Inventory::count(),
                     'route' => 'inventory.index',
                 ],
                 [
+                    'title' => 'Producten',
+                    'value' => Product::count(),
+                    'route' => 'products.index',
+                ],
+                [
                     'title' => 'Storingformulier',
                     'value' => '',
                     'route' => 'maintenance.requests.index',
-                ],
-                [
-                    'title' => 'Notities',
-                    'value' => 'Overzicht',
-                    'route' => 'notes.index',
-                ],
-
-                // =========================
-                // BEHEER
-                // =========================
+                 ],
+                // ADMIN EXTRA
                 [
                     'title' => 'Admin dashboard',
                     'value' => 'Beheer',
@@ -107,15 +95,18 @@ class DashboardController extends Controller
             ];
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SALES
-        |--------------------------------------------------------------------------
-        */
+        // =========================
+        // SALES
+        // =========================
         elseif ($user->hasRole('sales')) {
             $widgets = [
                 [
-                    'title' => 'Klanten overzicht',
+                    'title' => 'Klanten',
+                    'value' => Customer::count(),
+                    'route' => 'customers.create',
+                ],
+                [
+                    'title' => 'Klanten Overzicht',
                     'value' => Customer::count(),
                     'route' => 'customers.index',
                 ],
@@ -130,15 +121,9 @@ class DashboardController extends Controller
                     'route' => 'appointments.index',
                 ],
                 [
-                    'title' => 'Factuuroverzicht',
-                    'value' => '',
-                    'route' => 'invoices.overview',
-                ],
-
-                [
-                    'title' => 'Nieuwe klant',
+                    'title' => 'Nieuwe afspraak',
                     'value' => 'Toevoegen',
-                    'route' => 'customers.create',
+                    'route' => 'appointments.create',
                 ],
                 [
                     'title' => 'Nieuw contract',
@@ -146,24 +131,21 @@ class DashboardController extends Controller
                     'route' => 'contracts.create',
                 ],
                 [
-                    'title' => 'Nieuwe afspraak',
-                    'value' => 'Inplannen',
-                    'route' => 'appointments.create',
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
                 ],
-
                 [
                     'title' => 'Storingformulier',
                     'value' => '',
                     'route' => 'maintenance.requests.index',
-                ],
+                 ],
             ];
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | FINANCE
-        |--------------------------------------------------------------------------
-        */
+        // =========================
+        // FINANCE
+        // =========================
         elseif ($user->hasRole('finance')) {
             $widgets = [
                 [
@@ -172,9 +154,9 @@ class DashboardController extends Controller
                     'route' => 'contracts.index',
                 ],
                 [
-                    'title' => 'Factuuroverzicht',
-                    'value' => '',
-                    'route' => 'invoices.overview',
+                    'title' => 'Notities',
+                    'value' => 'Overzicht',
+                    'route' => 'notes.index',
                 ],
                 [
                     'title' => 'Actieve afspraken',
@@ -182,18 +164,16 @@ class DashboardController extends Controller
                     'route' => 'appointments.index',
                 ],
                 [
-                    'title' => 'Notities',
-                    'value' => 'Overzicht',
-                    'route' => 'notes.index',
+                    'title' => 'Factuuroverzicht',
+                    'value' => '',
+                    'route' => 'invoices.overview',
                 ],
             ];
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | INKOOP
-        |--------------------------------------------------------------------------
-        */
+        // =========================
+        // INKOOP
+        // =========================
         elseif ($user->hasRole('inkoop')) {
             $widgets = [
                 [
@@ -209,11 +189,9 @@ class DashboardController extends Controller
             ];
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | MAINTENANCE
-        |--------------------------------------------------------------------------
-        */
+        // =========================
+        // MAINTENANCE
+        // =========================
         elseif ($user->hasRole('maintenance')) {
             $widgets = [
                 [
@@ -222,15 +200,15 @@ class DashboardController extends Controller
                     'route' => 'appointments.index',
                 ],
                 [
-                    'title' => 'Alle afspraken',
+                    'title' => 'Afspraken',
                     'value' => 'Bekijken',
                     'route' => 'appointments.index',
                 ],
-                [
+                 [
                     'title' => 'Storingformulier',
                     'value' => 'Bekijken',
                     'route' => 'maintenance.requests.index',
-                ],
+                 ],
             ];
         }
 
