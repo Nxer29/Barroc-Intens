@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="{{ str_replace('_','-',app()->getLocale()) }}" class="light">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -16,8 +17,8 @@
             <!-- Logo -->
             <a href="{{ url('/') }}" class="flex items-center gap-4">
                 <img src="{{ asset('images/logo6_groot.png') }}"
-                     alt="Barroc Intens"
-                     class="h-12 transition-smooth dark:brightness-90" />
+                    alt="Barroc Intens"
+                    class="h-12 transition-smooth dark:brightness-90" />
                 <span class="hidden sm:inline text-xl font-bold tracking-wide text-yellow-500">
                     BARROC INTENS
                 </span>
@@ -35,13 +36,13 @@
                 @endrole
             </nav>
 
-            
+
             <div class="flex items-center gap-3 ml-4">
 
                 <!-- Theme toggle -->
                 <button id="theme-toggle-btn"
-                        class="text-sm px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
-                        title="Thema wisselen">
+                    class="text-sm px-3 py-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                    title="Thema wisselen">
                     <i class="fa-solid fa-circle-half-stroke"></i>
                 </button>
 
@@ -72,9 +73,10 @@
     </main>
 
     <!-- FOOTER -->
-<footer class="text-center text-gray-400 py-4 text-sm border-t border-gray-600 dark:border-gray-800">
+    <footer class="text-center text-gray-400 py-4 text-sm border-t border-gray-600 dark:border-gray-800">
         © {{ date('Y') }} Barroc Intens — All rights reserved by Bram.
     </footer>
 
 </body>
+
 </html>
