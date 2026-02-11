@@ -1,118 +1,116 @@
 @extends('layouts.app')
 
 @section('content')
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="container">
-        <h1 class="mb-4">Gebruikers</h1>
+<div class="max-w-7xl mx-auto px-6 py-10">
 
-        <table class="table table-striped align-middle">
-            <thead>
-            <tr>
-                <th>#</th>
-                <th>Naam</th>
-                <th>Email</th>
-                <th>Rollen</th>
-                <th>Acties</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($users ?? collect() as $user)
-                <tr id="user-row-{{ $user->id }}">
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td class="user-roles">
-                        @foreach($user->getRoleNames() as $r)
-                            <span class="badge bg-success me-1">{{ $r }}</span>
-                        @endforeach
-                    </td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button"
-                                    id="rolesDropdown{{ $user->id }}"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                Rollen beheren
-                            </button>
-                            <div class="dropdown-menu p-3" aria-labelledby="rolesDropdown{{ $user->id }}"
-                                 style="min-width: 240px;">
-                                <div class="role-checklist" data-user-id="{{ $user->id }}">
-                                    @foreach($roles ?? collect() as $role)
-                                        @php $has = $user->hasRole($role->name); @endphp
-                                        <div class="form-check mb-1">
-                                            <input class="form-check-input role-checkbox"
-                                                   type="checkbox"
-                                                   id="role-{{ $user->id }}-{{ $role->name }}"
-                                                   data-role="{{ $role->name }}"
-                                                   data-user-id="{{ $user->id }}"
-                                                   @if($has) checked @endif>
-                                            <label class="form-check-label" for="role-{{ $user->id }}-{{ $role->name }}">
-                                                {{ $role->name }}
-                                            </label>
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            @endforeach
-            </tbody>
-        </table>
+    {{-- Header --}}
+    <div class="mb-10">
+        <h1 class="text-3xl font-bold text-white">Gebruikersbeheer</h1>
+        <p class="text-gray-400 mt-1">
+            Beheer gebruikers en hun rollen
+        </p>
     </div>
 
-        <script>
-            const checkboxs = document.getElementsByClassName('role-checkbox');
-            console.log(checkboxs);
-            for (const checkbox of checkboxs) {
-                checkbox.addEventListener('change', function (e) {
-                    const cb = e.target.closest('.role-checkbox');
-                    if (!cb) return;
+    {{-- Card --}}
+    <div class="bg-slate-900 rounded-2xl border border-slate-700 shadow-xl overflow-hidden">
 
-                    const userId = cb.dataset.userId;
-                    const role = cb.dataset.role;
-                    const assigned = cb.checked;
-                    const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        <div class="px-6 py-4 border-b border-slate-700">
+            <h2 class="text-lg font-semibold text-white">Alle gebruikers</h2>
+        </div>
 
-                    // Optional: optimistic UI—disable while saving
-                    cb.disabled = true;
+        <div class="divide-y divide-slate-800">
+            @foreach($users as $user)
+                <div id="user-row-{{ $user->id }}"
+                     class="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 py-6
+                            hover:bg-slate-800/50 transition items-center">
 
-                    fetch(`/admin/users/roles/${userId}`, {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': token,
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({role: role, assigned: assigned})
-                    })
-                        .then(r => r.json().then(data => ({status: r.status, body: data})))
-                        .then(res => {
-                            cb.disabled = false;
-                            if (res.status >= 200 && res.status < 300) {
-                                const row = document.getElementById('user-row-' + userId);
-                                const rolesCell = row.querySelector('.user-roles');
-                                if (res.body.roles) {
-                                    rolesCell.innerHTML = '';
-                                    res.body.roles.forEach(function (rname) {
-                                        const span = document.createElement('span');
-                                        span.className = 'badge bg-success me-1';
-                                        span.textContent = rname;
-                                        rolesCell.appendChild(span);
-                                    });
-                                }
-                            } else {
-                                cb.checked = !assigned; // revert
-                                alert(res.body.message || 'Er is iets misgegaan');
-                            }
-                        })
-                        .catch(err => {
-                            cb.disabled = false;
-                            cb.checked = !assigned; // revert
-                            console.error(err);
-                            alert('Fout bij verbinden met server');
-                        });
-                });
-            };
-        </script>
+                    {{-- USER INFO (links) --}}
+                    <div>
+                        <p class="text-white font-semibold text-lg">
+                            {{ $user->name }}
+                        </p>
+                        <p class="text-sm text-gray-400">
+                            {{ $user->email }}
+                        </p>
+                    </div>
+
+                    {{-- ACTIEVE ROLLEN (midden) --}}
+                    <div class="flex justify-center">
+                        <div class="flex flex-wrap gap-2 justify-center user-roles">
+                            @foreach($user->getRoleNames() as $r)
+                                <span
+                                    class="text-xs font-medium px-3 py-1 rounded-full
+                                           bg-blue-500/15 text-blue-400
+                                           border border-blue-500/30">
+                                    {{ ucfirst($r) }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- ROLES CHECKLIST (rechts, breed) --}}
+                    <div class="md:col-span-2">
+                        <div class="space-y-3 max-w-sm ml-auto">
+                            @foreach($roles as $role)
+                                @php $has = $user->hasRole($role->name); @endphp
+                                <label
+                                    class="flex items-center gap-3 text-sm text-gray-300
+                                           cursor-pointer select-none">
+                                    <input type="checkbox"
+                                           class="role-checkbox w-4 h-4 accent-blue-500"
+                                           data-user-id="{{ $user->id }}"
+                                           data-role="{{ $role->name }}"
+                                           @checked($has)>
+                                    <span>{{ ucfirst($role->name) }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
+
+{{-- JS --}}
+<script>
+document.querySelectorAll('.role-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+        const userId = cb.dataset.userId;
+        const role = cb.dataset.role;
+        const token = document.querySelector('meta[name="csrf-token"]').content;
+
+        fetch(`/admin/users/roles/${userId}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            },
+            body: JSON.stringify({ role })
+        })
+        .then(r => r.json())
+        .then(data => {
+            const row = document.getElementById(`user-row-${userId}`);
+            const rolesCell = row.querySelector('.user-roles');
+            rolesCell.innerHTML = '';
+
+            data.roles.forEach(r => {
+                const span = document.createElement('span');
+                span.className =
+                    'text-xs font-medium px-3 py-1 rounded-full bg-blue-500/15 text-blue-400 border border-blue-500/30';
+                span.textContent = r;
+                rolesCell.appendChild(span);
+            });
+        })
+        .catch(() => {
+            cb.checked = !cb.checked;
+            alert('Opslaan mislukt');
+        });
+    });
+});
+</script>
 @endsection

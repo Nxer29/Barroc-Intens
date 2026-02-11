@@ -14,6 +14,9 @@ class Appointment extends Model
         'status',
         'notes',
     ];
+protected $casts = [
+    'scheduled_at' => 'datetime',
+];
 
     public function customer()
     {

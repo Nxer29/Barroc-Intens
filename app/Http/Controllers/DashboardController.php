@@ -8,232 +8,173 @@ use App\Models\Contract;
 use App\Models\Inventory;
 use App\Models\Appointment;
 use App\Models\Product;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        $user = $request->user();
-        $widgets = [];
+        $user = Auth::user();
 
-        /*
-        |--------------------------------------------------------------------------
-        | ADMIN – ziet alles
-        |--------------------------------------------------------------------------
-        */
+        // Bepaal de rol
         if ($user->hasRole('Admin')) {
-            $widgets = [
-
-                // =========================
-                // OVERZICHT (status)
-                // =========================
-                [
-                    'title' => 'Klanten overzicht',
-                    'value' => Customer::count(),
-                    'route' => 'customers.index',
-                ],
-                [
-                    'title' => 'Contracten',
-                    'value' => Contract::count(),
-                    'route' => 'contracts.index',
-                ],
-                [
-                    'title' => 'Afspraken',
-                    'value' => Appointment::count(),
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Actieve afspraken',
-                    'value' => Appointment::where('status', 'planned')->count(),
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Factuuroverzicht',
-                    'value' => '',
-                    'route' => 'invoices.overview',
-                ],
-
-                // =========================
-                // ACTIES (toevoegen)
-                // =========================
-                [
-                    'title' => 'Nieuwe klant',
-                    'value' => 'Toevoegen',
-                    'route' => 'customers.create',
-                ],
-                [
-                    'title' => 'Nieuw contract',
-                    'value' => 'Aanmaken',
-                    'route' => 'contracts.create',
-                ],
-                [
-                    'title' => 'Nieuwe afspraak',
-                    'value' => 'Inplannen',
-                    'route' => 'appointments.create',
-                ],
-
-                // =========================
-                // OPERATIONEEL
-                // =========================
-                [
-                    'title' => 'Producten',
-                    'value' => Product::count(),
-                    'route' => 'products.index',
-                ],
-                [
-                    'title' => 'Voorraaditems',
-                    'value' => Inventory::count(),
-                    'route' => 'inventory.index',
-                ],
-                [
-                    'title' => 'Storingformulier',
-                    'value' => '',
-                    'route' => 'maintenance.requests.index',
-                ],
-                [
-                    'title' => 'Notities',
-                    'value' => 'Overzicht',
-                    'route' => 'notes.index',
-                ],
-
-                // =========================
-                // BEHEER
-                // =========================
-                [
-                    'title' => 'Admin dashboard',
-                    'value' => 'Beheer',
-                    'route' => 'admin-dashboard.index',
-                ],
-            ];
+            return $this->adminDashboard();
+        } elseif ($user->hasRole('sales')) {
+            return $this->salesDashboard();
+        } elseif ($user->hasRole('finance')) {
+            return $this->financeDashboard();
+        } elseif ($user->hasRole('inkoop')) {
+            return $this->inkoopDashboard();
+        } elseif ($user->hasRole('maintenance')) {
+            return $this->maintenanceDashboard($user);
         }
 
-        /*
-        |--------------------------------------------------------------------------
-        | SALES
-        |--------------------------------------------------------------------------
-        */
-        elseif ($user->hasRole('sales')) {
-            $widgets = [
-                [
-                    'title' => 'Klanten overzicht',
-                    'value' => Customer::count(),
-                    'route' => 'customers.index',
-                ],
-                [
-                    'title' => 'Contracten',
-                    'value' => Contract::count(),
-                    'route' => 'contracts.index',
-                ],
-                [
-                    'title' => 'Afspraken',
-                    'value' => Appointment::count(),
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Factuuroverzicht',
-                    'value' => '',
-                    'route' => 'invoices.overview',
-                ],
+        return view('dashboard', [
+            'widgets' => [],
+            'activityData' => json_encode([0, 0, 0, 0, 0, 0, 0]),
+            'appointmentsToday' => 0,
+            'openTasks' => 0,
+            'newMessages' => 0,
+            'recentActivity' => collect()
+        ]);
+    }
 
-                [
-                    'title' => 'Nieuwe klant',
-                    'value' => 'Toevoegen',
-                    'route' => 'customers.create',
-                ],
-                [
-                    'title' => 'Nieuw contract',
-                    'value' => 'Aanmaken',
-                    'route' => 'contracts.create',
-                ],
-                [
-                    'title' => 'Nieuwe afspraak',
-                    'value' => 'Inplannen',
-                    'route' => 'appointments.create',
-                ],
+    private function adminDashboard()
+    {
+        $widgets = [
+            ['title' => 'Klanten', 'value' => Customer::count(), 'route' => 'customers.index'],
+            ['title' => 'Contracten', 'value' => Contract::count(), 'route' => 'contracts.index'],
+            ['title' => 'Afspraken', 'value' => Appointment::count(), 'route' => 'appointments.index'],
+            ['title' => 'Producten', 'value' => Product::count(), 'route' => 'products.index'],
+        ];
 
-                [
-                    'title' => 'Storingformulier',
-                    'value' => '',
-                    'route' => 'maintenance.requests.index',
-                ],
-            ];
+        $activityData = json_encode($this->getActivityData());
+        $appointmentsToday = Appointment::whereDate('scheduled_at', Carbon::today())->count();
+        $openTasks = Appointment::where('status', 'planned')->count();
+        $recentActivity = $this->getRecentActivity();
+
+        return view('dashboard', compact('widgets', 'activityData', 'appointmentsToday', 'openTasks', 'recentActivity'))->with('newMessages', 0);
+    }
+
+    private function salesDashboard()
+    {
+        $widgets = [
+            ['title' => 'Klanten', 'value' => Customer::count(), 'route' => 'customers.index'],
+            ['title' => 'Contracten', 'value' => Contract::count(), 'route' => 'contracts.index'],
+            ['title' => 'Afspraken', 'value' => Appointment::count(), 'route' => 'appointments.index'],
+            ['title' => 'Actieve deals', 'value' => Contract::where('status', 'active')->count(), 'route' => 'contracts.index'],
+        ];
+
+        $activityData = json_encode($this->getActivityData());
+        $appointmentsToday = Appointment::whereDate('scheduled_at', Carbon::today())->count();
+        $openTasks = Appointment::where('status', 'planned')->count();
+        $recentActivity = $this->getRecentActivity();
+
+        return view('dashboard', compact('widgets', 'activityData', 'appointmentsToday', 'openTasks', 'recentActivity'))->with('newMessages', 0);
+    }
+
+    private function financeDashboard()
+    {
+        $widgets = [
+            ['title' => 'Contracten', 'value' => Contract::count(), 'route' => 'contracts.index'],
+            ['title' => 'Actieve contracten', 'value' => Contract::where('status', 'active')->count(), 'route' => 'contracts.index'],
+            ['title' => 'Klanten', 'value' => Customer::count(), 'route' => 'customers.index'],
+            ['title' => 'Afspraken', 'value' => Appointment::count(), 'route' => 'appointments.index'],
+        ];
+
+        $activityData = json_encode($this->getActivityData());
+        $appointmentsToday = Appointment::whereDate('scheduled_at', Carbon::today())->count();
+        $openTasks = Appointment::where('status', 'planned')->count();
+        $recentActivity = $this->getRecentActivity();
+
+        return view('dashboard', compact('widgets', 'activityData', 'appointmentsToday', 'openTasks', 'recentActivity'))->with('newMessages', 0);
+    }
+
+    private function inkoopDashboard()
+    {
+        $widgets = [
+            ['title' => 'Voorraaditems', 'value' => Inventory::count(), 'route' => 'inventory.index'],
+            ['title' => 'Producten', 'value' => Product::count(), 'route' => 'products.index'],
+            ['title' => 'Lage voorraad', 'value' => Inventory::where('quantity', '<', 10)->count(), 'route' => 'inventory.index'],
+            ['title' => 'Categorieën', 'value' => Product::distinct('category')->count(), 'route' => 'products.index'],
+        ];
+
+        $activityData = json_encode([0, 0, 0, 0, 0, 0, 0]);
+        $appointmentsToday = 0;
+        $openTasks = 0;
+        $recentActivity = collect();
+
+        return view('dashboard', compact('widgets', 'activityData', 'appointmentsToday', 'openTasks', 'recentActivity'))->with('newMessages', 0);
+    }
+
+    private function maintenanceDashboard($user)
+    {
+        $widgets = [
+            ['title' => 'Mijn afspraken', 'value' => Appointment::where('technician_id', $user->id)->count(), 'route' => 'appointments.index'],
+            ['title' => 'Geplande taken', 'value' => Appointment::where('technician_id', $user->id)->where('status', 'planned')->count(), 'route' => 'appointments.index'],
+            ['title' => 'Voltooid', 'value' => Appointment::where('technician_id', $user->id)->where('status', 'completed')->count(), 'route' => 'appointments.index'],
+            ['title' => 'Klanten', 'value' => Appointment::where('technician_id', $user->id)->distinct('customer_id')->count('customer_id'), 'route' => null],
+        ];
+
+        $activityData = json_encode($this->getActivityDataForTechnician($user->id));
+        $appointmentsToday = Appointment::where('technician_id', $user->id)->whereDate('scheduled_at', Carbon::today())->count();
+        $openTasks = Appointment::where('technician_id', $user->id)->where('status', 'planned')->count();
+        $recentActivity = $this->getRecentActivityForTechnician($user->id);
+
+        return view('dashboard', compact('widgets', 'activityData', 'appointmentsToday', 'openTasks', 'recentActivity'))->with('newMessages', 0);
+    }
+
+    private function getActivityData()
+    {
+        $data = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $data[] = Appointment::whereDate('scheduled_at', $date)->count();
         }
+        return $data;
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | FINANCE
-        |--------------------------------------------------------------------------
-        */
-        elseif ($user->hasRole('finance')) {
-            $widgets = [
-                [
-                    'title' => 'Contracten',
-                    'value' => Contract::count(),
-                    'route' => 'contracts.index',
-                ],
-                [
-                    'title' => 'Factuuroverzicht',
-                    'value' => '',
-                    'route' => 'invoices.overview',
-                ],
-                [
-                    'title' => 'Actieve afspraken',
-                    'value' => Appointment::where('status', 'planned')->count(),
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Notities',
-                    'value' => 'Overzicht',
-                    'route' => 'notes.index',
-                ],
-            ];
+    private function getActivityDataForTechnician($technicianId)
+    {
+        $data = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::now()->subDays($i);
+            $data[] = Appointment::where('technician_id', $technicianId)->whereDate('scheduled_at', $date)->count();
         }
+        return $data;
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | INKOOP
-        |--------------------------------------------------------------------------
-        */
-        elseif ($user->hasRole('inkoop')) {
-            $widgets = [
-                [
-                    'title' => 'Voorraaditems',
-                    'value' => Inventory::count(),
-                    'route' => 'inventory.index',
-                ],
-                [
-                    'title' => 'Producten',
-                    'value' => Product::count(),
-                    'route' => 'products.index',
-                ],
-            ];
-        }
+    private function getRecentActivity()
+    {
+        return Appointment::with('customer', 'type')
+            ->latest('created_at')
+            ->limit(3)
+            ->get()
+            ->map(function ($apt) {
+                return [
+                    'type' => 'Afspraak aangemaakt',
+                    'title' => $apt->customer->company_name ?? 'Onbekend',
+                    'time' => $apt->created_at->diffForHumans(),
+                    'color' => 'yellow',
+                ];
+            });
+    }
 
-        /*
-        |--------------------------------------------------------------------------
-        | MAINTENANCE
-        |--------------------------------------------------------------------------
-        */
-        elseif ($user->hasRole('maintenance')) {
-            $widgets = [
-                [
-                    'title' => 'Geplande afspraken',
-                    'value' => Appointment::where('status', 'planned')->count(),
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Alle afspraken',
-                    'value' => 'Bekijken',
-                    'route' => 'appointments.index',
-                ],
-                [
-                    'title' => 'Storingformulier',
-                    'value' => 'Bekijken',
-                    'route' => 'maintenance.requests.index',
-                ],
-            ];
-        }
-
-        return view('dashboard', compact('widgets'));
+    private function getRecentActivityForTechnician($technicianId)
+    {
+        return Appointment::where('technician_id', $technicianId)
+            ->with('customer', 'type')
+            ->latest('created_at')
+            ->limit(3)
+            ->get()
+            ->map(function ($apt) {
+                return [
+                    'type' => $apt->type->name ?? 'Afspraak',
+                    'title' => $apt->customer->company_name ?? 'Onbekend',
+                    'time' => $apt->created_at->diffForHumans(),
+                    'color' => $apt->status === 'completed' ? 'emerald' : 'yellow',
+                ];
+            });
     }
 }

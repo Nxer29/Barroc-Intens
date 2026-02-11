@@ -1,19 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="max-w-6xl mx-auto space-y-10">
 
-<div class="max-w-4xl mx-auto">
+    <div>
+        <h1 class="text-3xl font-bold text-white">Afspraak bewerken</h1>
+        <p class="subtext">Pas de gegevens van deze afspraak aan</p>
+    </div>
 
-    {{-- Titel --}}
-    <h1 class="text-3xl font-bold text-yellow-400 mb-6">
-        Afspraak bewerken
-    </h1>
-
-    {{-- Fouten --}}
     @if ($errors->any())
-        <div class="bg-red-800/40 border border-red-500 text-red-300 p-4 rounded-lg mb-6">
-            <strong>Er zijn fouten:</strong>
-            <ul class="mt-2 list-disc ml-6">
+        <div class="rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-red-300">
+            <ul class="list-disc ml-5 space-y-1">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -21,70 +18,50 @@
         </div>
     @endif
 
-    {{-- Formulier --}}
-    <form action="{{ route('appointments.update', $appointment->id) }}" method="POST" class="space-y-6">
-    @csrf
-    @method('PATCH')
+    <form action="{{ route('appointments.update', $appointment) }}"
+          method="POST"
+          class="card space-y-8">
+        @csrf
+        @method('PATCH')
 
-
-        {{-- Rij 1: klant + type --}}
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {{-- Klant --}}
             <div>
-                <label class="block text-sm text-gray-300 mb-1">Klant</label>
-                <select name="customer_id"
-                        class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-yellow-400">
-
+                <label class="subtext block mb-2">Klant</label>
+                <select name="customer_id" class="input">
                     @foreach ($customers as $customer)
                         <option value="{{ $customer->id }}"
-                            {{ (old('customer_id', $appointment->customer_id) == $customer->id) ? 'selected' : '' }}>
+                            {{ old('customer_id', $appointment->customer_id) == $customer->id ? 'selected' : '' }}>
                             {{ $customer->company_name }}
-                            @if($customer->contact_name)
-                                — {{ $customer->contact_name }}
-                            @endif
                         </option>
                     @endforeach
                 </select>
             </div>
 
-            {{-- Type afspraak --}}
             <div>
-                <label class="block text-sm text-gray-300 mb-1">Type afspraak</label>
-                <select name="type_id"
-                        class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-yellow-400">
-
+                <label class="subtext block mb-2">Type afspraak</label>
+                <select name="type_id" class="input">
                     @foreach ($types as $type)
                         <option value="{{ $type->id }}"
-                            {{ (old('type_id', $appointment->type_id) == $type->id) ? 'selected' : '' }}>
+                            {{ old('type_id', $appointment->type_id) == $type->id ? 'selected' : '' }}>
                             {{ $type->name }}
                         </option>
                     @endforeach
                 </select>
             </div>
 
-        </div>
-
-        {{-- Rij 2: datum + monteur --}}
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            {{-- Datum --}}
             <div>
-                <label class="block text-sm text-gray-300 mb-1">Datum</label>
+                <label class="subtext block mb-2">Datum</label>
                 <input type="date"
                        name="scheduled_at"
                        value="{{ old('scheduled_at', \Carbon\Carbon::parse($appointment->scheduled_at)->format('Y-m-d')) }}"
-                       class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-yellow-400">
+                       class="input">
             </div>
 
-            {{-- Monteur --}}
             <div>
-                <label class="block text-sm text-gray-300 mb-1">Monteur</label>
-                <select name="technician_id"
-                        class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-yellow-400">
-
-                    <option value="">-- Geen monteur gekoppeld --</option>
-
+                <label class="subtext block mb-2">Monteur</label>
+                <select name="technician_id" class="input">
+                    <option value="">Niet toegewezen</option>
                     @foreach ($technicians as $tech)
                         <option value="{{ $tech->id }}"
                             {{ old('technician_id', $appointment->technician_id) == $tech->id ? 'selected' : '' }}>
@@ -96,14 +73,16 @@
 
         </div>
 
-        {{-- Status --}}
         <div>
-            <label class="block text-sm text-gray-300 mb-1">Status</label>
-            <select name="status"
-                    class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-yellow-400">
-
+            <label class="subtext block mb-2">Status</label>
+            <select name="status" class="input">
                 @php
-                    $statuses = ['pending' => 'In afwachting', 'planned' => 'Ingepland', 'completed' => 'Voltooid', 'cancelled' => 'Geannuleerd'];
+                    $statuses = [
+                        'pending' => 'In afwachting',
+                        'planned' => 'Ingepland',
+                        'completed' => 'Voltooid',
+                        'cancelled' => 'Geannuleerd'
+                    ];
                 @endphp
 
                 @foreach ($statuses as $value => $label)
@@ -115,21 +94,23 @@
             </select>
         </div>
 
-        {{-- Beschrijving --}}
         <div>
-            <label class="block text-sm text-gray-300 mb-1">Beschrijving</label>
-            <textarea name="notes" rows="4"
-                      class="w-full bg-gray-900 border border-gray-700 rounded-lg p-3 text-white focus:ring-yellow-400"
-                      placeholder="Omschrijving van de afspraak...">{{ old('notes', $appointment->notes) }}</textarea>
+            <label class="subtext block mb-2">Notities</label>
+            <textarea name="notes" rows="4" class="input">
+                {{ old('notes', $appointment->notes) }}
+            </textarea>
         </div>
 
-        {{-- Verzendknop --}}
-        <button class="bg-yellow-400 text-black px-6 py-3 rounded-lg font-semibold hover:bg-yellow-500 transition">
-            Wijzigingen opslaan
-        </button>
+        <div class="flex justify-end gap-4 pt-4">
+            <a href="{{ route('appointments.index') }}" class="btn-outline">
+                Terug
+            </a>
+
+            <button type="submit" class="btn-primary">
+                Wijzigingen opslaan
+            </button>
+        </div>
 
     </form>
-
 </div>
-
 @endsection
