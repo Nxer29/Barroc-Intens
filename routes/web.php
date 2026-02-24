@@ -16,6 +16,7 @@ use App\Http\Controllers\NotesController;
 use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Http\Controllers\QuoteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -250,5 +251,14 @@ Route::put('/customers/{customer}', function (Request $request, Customer $custom
 
     return redirect()->route('customers.index')->with('success', 'Klant bijgewerkt.');
 })->name('customers.update');
+
+Route::middleware(['auth'])->group(function () {
+    // ...
+    Route::resource('quotes', QuoteController::class);
+    Route::get('/quotes', [QuoteController::class, 'index'])->name('quotes.overview');
+    Route::get('quotes/{quote}/pdf', [QuoteController::class, 'pdf'])->name('quotes.pdf');
+    Route::post('quotes/{quote}/email', [QuoteController::class, 'email'])->name('quotes.email');
+    Route::post('quotes/{quote}/send', [QuoteController::class, 'send'])->name('quotes.send');
+});
 
 require __DIR__ . '/auth.php';
