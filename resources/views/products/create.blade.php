@@ -1,30 +1,31 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-ui.header title="Nieuw product">
-        <x-ui.button
-            variant="outline"
-            class="border-gray-300 text-gray-800 hover:bg-gray-200 hover:text-gray-900"
-            style="color: #ffffff !important;"
-            onclick="location.href='{{ route('products.index') }}'"
-        >
-            Terug naar lijst
-        </x-ui.button>
-    </x-ui.header>
+<div class="max-w-7xl mx-auto px-6 py-10">
 
-    <main class="max-w-4xl mx-auto p-6">
+    <div class="flex justify-between items-start mb-12">
+        <div>
+            <h1 class="text-4xl font-bold text-white">Nieuw product</h1>
+            <p class="text-gray-400 mt-2">Voeg een nieuw product toe aan het systeem</p>
+        </div>
+        <a href="{{ route('products.index') }}" class="px-6 py-3 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition font-medium">
+            Terug naar lijst
+        </a>
+    </div>
+
+    <main>
         @if ($errors->any())
-            <div class="mb-6 p-4 rounded-xl bg-red-100 border border-red-300 text-red-800">
-                <strong class="block mb-2">Er zijn fouten:</strong>
-                <ul class="list-disc list-inside text-sm space-y-1">
-                    @foreach ($errors->all() as $e)
-                        <li>{{ $e }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        <div class="mb-6 rounded-lg border border-red-500 bg-red-900/20 px-4 py-3 text-red-300">
+            <strong class="block mb-2">Er zijn fouten:</strong>
+            <ul class="list-disc list-inside text-sm space-y-1">
+                @foreach ($errors->all() as $e)
+                <li>{{ $e }}</li>
+                @endforeach
+            </ul>
+        </div>
         @endif
 
-        <x-ui.card class="bg-white text-gray-900">
+        <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700 rounded-2xl p-8 shadow-xl">
             <form method="POST" action="{{ route('products.store') }}" class="space-y-5">
                 @csrf
 
@@ -36,7 +37,21 @@
                     {{ old('description') }}
                 </x-ui.textarea>
 
-                <x-ui.input label="Categorie" name="category_id" value="{{ old('category_id') }}" required />
+                <div>
+                    <label for="category_id" class="block text-sm font-semibold text-slate-300 mb-2">Categorie</label>
+                    <select
+                        id="category_id"
+                        name="category_id"
+                        class="w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                        required>
+                        <option value="">Selecteer categorie</option>
+                        @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" @selected(old('category_id')==$category->id)>
+                            {{ $category->name }}
+                        </option>
+                        @endforeach
+                    </select>
+                </div>
 
                 <x-ui.input
                     label="Unit prijs (€)"
@@ -44,8 +59,7 @@
                     type="number"
                     step="0.01"
                     value="{{ old('unit_price') }}"
-                    required
-                />
+                    required />
 
                 <x-ui.input
                     label="Prijs (€)"
@@ -53,8 +67,7 @@
                     type="number"
                     step="0.01"
                     value="{{ old('price') }}"
-                    required
-                />
+                    required />
 
                 <x-ui.input
                     label="Voorraad"
@@ -63,35 +76,29 @@
                     step="1"
                     min="0"
                     value="{{ old('stock') }}"
-                    required
-                />
+                    required />
 
-                <label class="flex items-center gap-3 text-sm text-gray-700">
+                <label class="flex items-center gap-3 text-sm text-slate-300">
                     <input
                         type="checkbox"
                         name="is_visible_to_customers"
                         value="1"
                         @checked(old('is_visible_to_customers', true))
-                        class="rounded border-gray-300 text-brand focus:ring-brand"
-                    >
+                        class="rounded border-slate-600 bg-slate-700/50 text-yellow-400 focus:ring-yellow-400">
                     <span>Zichtbaar voor klanten</span>
                 </label>
 
-                <div class="pt-4 flex justify-end gap-3">
-                    <x-ui.button
-                        variant="outline"
-                        class="border-gray-400 text-gray-800 hover:bg-gray-100"
-                        onclick="location.href='{{ route('products.index') }}'"
-                        type="button"
-                    >
+                <div class="pt-4 flex justify-end gap-4">
+                    <a href="{{ route('products.index') }}" class="px-6 py-3 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition font-medium">
                         Annuleren
-                    </x-ui.button>
+                    </a>
 
-                    <x-ui.button class="bg-brand text-white hover:bg-brand-dark" type="submit">
+                    <button type="submit" class="bg-yellow-400 hover:bg-yellow-300 text-gray-900 px-6 py-3 rounded-lg font-semibold transition">
                         Product aanmaken
-                    </x-ui.button>
+                    </button>
                 </div>
             </form>
-        </x-ui.card>
+        </div>
     </main>
+</div>
 @endsection

@@ -2,32 +2,32 @@
 
 @section('content')
 <div class="flex items-center justify-center min-h-screen">
-    <div class="bg-white/10 backdrop-blur-md border border-yellow-400/40 rounded-3xl shadow-2xl p-10 w-full max-w-md text-gray-100">
-        <h2 class="text-3xl font-bold text-center text-yellow-400 mb-6">Welkom terug</h2>
-        <p class="text-center text-gray-300 mb-8">Log in om toegang te krijgen tot het Barroc Intens portaal</p>
+    <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 backdrop-blur-md border border-slate-700 rounded-3xl shadow-2xl p-10 w-full max-w-md text-white">
+        <h2 class="text-4xl font-bold text-center text-white mb-2">Welkom terug</h2>
+        <p class="text-center text-gray-400 mb-8">Log in om toegang te krijgen tot het Barroc Intens portaal</p>
 
         <form method="POST" action="{{ route('login') }}" class="space-y-5">
             @csrf
 
             <div>
-                <label class="block text-sm text-gray-300 mb-1">E-mailadres</label>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">E-mailadres</label>
                 <input type="email" name="email" required autofocus
-                    class="w-full rounded-xl border border-gray-700 bg-gray-900 text-gray-100 px-4 py-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+                    class="w-full rounded-lg border border-slate-600 bg-slate-700/50 text-white px-4 py-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none placeholder-slate-400">
             </div>
 
             <div>
-                <label class="block text-sm text-gray-300 mb-1">Wachtwoord</label>
+                <label class="block text-sm font-semibold text-slate-300 mb-2">Wachtwoord</label>
                 <input type="password" name="password" required
-                    class="w-full rounded-xl border border-gray-700 bg-gray-900 text-gray-100 px-4 py-2 focus:ring-2 focus:ring-yellow-400 focus:outline-none">
+                    class="w-full rounded-lg border border-slate-600 bg-slate-700/50 text-white px-4 py-3 focus:ring-2 focus:ring-yellow-400 focus:outline-none placeholder-slate-400">
             </div>
 
-            <button type="submit" class="w-full bg-yellow-400 text-black font-semibold py-2 rounded-xl hover:bg-yellow-500 transition">
+            <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-300 text-gray-900 font-semibold py-3 rounded-lg transition">
                 Inloggen
             </button>
 
             <p class="text-center text-sm mt-6 text-gray-400">
                 Nog geen account?
-                <a href="{{ route('register') }}" class="text-yellow-400 hover:underline">Registreer hier</a>
+                <a href="{{ route('register') }}" class="text-yellow-400 hover:text-yellow-300 transition">Registreer hier</a>
             </p>
         </form>
     </div>

@@ -1,26 +1,26 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="w-full max-w-4xl mx-auto py-8">
+<div class="max-w-7xl mx-auto px-6 py-10">
 
-    <div class="bg-gray-900 rounded-2xl border border-yellow-400/40 p-6 shadow-lg">
-        <h1 class="text-2xl font-bold text-yellow-400 mb-2">
+    <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700 rounded-2xl p-8 shadow-xl">
+        <h1 class="text-4xl font-bold text-white mb-2">
             Storingsaanvraag aanmaken
         </h1>
 
-        <p class="text-sm text-gray-400 mb-6">
-            Klant: <span class="text-gray-200 font-medium">{{ $customer->displayName() }}</span>
+        <p class="text-gray-400 mt-2 mb-8">
+            Klant: <span class="text-white font-medium">{{ $customer->displayName() }}</span>
         </p>
 
         {{-- FOUTMELDINGEN --}}
         @if ($errors->any())
-            <div class="mb-4 rounded-lg bg-red-900/50 border border-red-500 p-4 text-red-200">
-                <ul class="list-disc list-inside text-sm">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+        <div class="mb-6 rounded-lg border border-red-500 bg-red-900/20 px-4 py-3 text-red-300">
+            <ul class="list-disc list-inside text-sm">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
         @endif
 
         <form method="POST" action="{{ route('maintenance.requests.store') }}" class="space-y-6">
@@ -31,46 +31,46 @@
 
             {{-- CONTRACT --}}
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">
+                <label class="block text-sm font-semibold text-slate-300 mb-2">
                     Contract
                 </label>
                 <select name="contract_id" required
-                        class="w-full rounded-lg bg-gray-800 border border-gray-700 text-gray-200 p-2">
+                    class="w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
                     <option value="">Selecteer contract</option>
                     @foreach($contracts as $contract)
-                        <option value="{{ $contract->id }}">
-                            {{ $contract->name }} ({{ $contract->status ?? 'onbekend' }})
-                        </option>
+                    <option value="{{ $contract->id }}">
+                        {{ $contract->name }} ({{ $contract->status ?? 'onbekend' }})
+                    </option>
                     @endforeach
                 </select>
             </div>
 
             {{-- PRODUCT / APPARAAT --}}
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">
+                <label class="block text-sm font-semibold text-slate-300 mb-2">
                     Apparaat
                 </label>
                 <select name="product_id" required
-                        class="w-full rounded-lg bg-gray-800 border border-gray-700 text-gray-200 p-2">
+                    class="w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
                     <option value="">Selecteer apparaat</option>
 
                     @foreach($contracts as $contract)
-                        @foreach($contract->products as $product)
-                            <option value="{{ $product->id }}">
-                                {{ $product->name }} (contract: {{ $contract->name }})
-                            </option>
-                        @endforeach
+                    @foreach($contract->products as $product)
+                    <option value="{{ $product->id }}">
+                        {{ $product->name }} (contract: {{ $contract->name }})
+                    </option>
+                    @endforeach
                     @endforeach
                 </select>
             </div>
 
             {{-- URGENTIE --}}
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">
+                <label class="block text-sm font-semibold text-slate-300 mb-2">
                     Urgentie
                 </label>
                 <select name="urgency" required
-                        class="w-full rounded-lg bg-gray-800 border border-gray-700 text-gray-200 p-2">
+                    class="w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
                     <option value="">Selecteer urgentie</option>
                     <option value="laag">Laag</option>
                     <option value="normaal">Normaal</option>
@@ -81,11 +81,11 @@
 
             {{-- PRIORITEIT --}}
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">
+                <label class="block text-sm font-semibold text-slate-300 mb-2">
                     Prioriteit
                 </label>
                 <select name="priority" required
-                        class="w-full rounded-lg bg-gray-800 border border-gray-700 text-gray-200 p-2">
+                    class="w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent">
                     <option value="">Selecteer prioriteit</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
@@ -95,23 +95,23 @@
 
             {{-- OMSCHRIJVING --}}
             <div>
-                <label class="block text-sm font-medium text-gray-300 mb-1">
+                <label class="block text-sm font-semibold text-slate-300 mb-2">
                     Probleembeschrijving
                 </label>
                 <textarea name="issue_description" rows="4" required
-                          class="w-full rounded-lg bg-gray-800 border border-gray-700 text-gray-200 p-2"
-                          placeholder="Omschrijf de storing zo duidelijk mogelijk..."></textarea>
+                    class="w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
+                    placeholder="Omschrijf de storing zo duidelijk mogelijk..."></textarea>
             </div>
 
             {{-- ACTIES --}}
-            <div class="flex gap-3 pt-4">
+            <div class="flex gap-4 pt-4">
                 <button type="submit"
-                        class="px-5 py-2 bg-yellow-400 text-gray-900 rounded-lg font-medium hover:opacity-90">
+                    class="bg-yellow-400 hover:bg-yellow-300 text-gray-900 px-6 py-3 rounded-lg font-semibold transition">
                     Verstuur naar Maintenance
                 </button>
 
                 <a href="{{ route('customers.show', $customer) }}"
-                   class="px-5 py-2 border border-gray-700 text-gray-300 rounded-lg hover:bg-gray-800">
+                    class="px-6 py-3 rounded-lg border border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white transition font-medium">
                     Annuleren
                 </a>
             </div>

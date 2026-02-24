@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -10,8 +11,7 @@ class ProductController extends Controller
 
 
     public function index(Request $request)
-    {
-        {
+    { {
             $query = Product::query();
 
             if ($q = $request->query('q')) {
@@ -29,12 +29,14 @@ class ProductController extends Controller
 
     public function create()
     {
-            return view('products.create');
+        $categories = ProductCategory::select('id', 'name')->orderBy('name')->get();
+        return view('products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $this->getArr($request);
+        $validated['is_visible_to_customers'] = $request->boolean('is_visible_to_customers');
 
         Product::create($validated);
 
@@ -51,7 +53,8 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        $categories = ProductCategory::select('id', 'name')->orderBy('name')->get();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
@@ -85,7 +88,7 @@ class ProductController extends Controller
             'category_id' => ['required', 'integer', 'exists:product_categories,id'],
             'unit_price' => ['required', 'numeric', 'min:0'],
             'price' => ['required', 'numeric', 'min:0'],
-            'is_visible_to_customers' => ['required', 'boolean'],
+            'is_visible_to_customers' => ['boolean'],
             'stock' => ['required', 'integer', 'min:0'],
         ]);
         return $data;

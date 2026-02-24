@@ -2,15 +2,14 @@
 
 <div class="mb-4">
     @if($label)
-        <label for="{{ $name }}" class="block text-sm font-display uppercase text-brand-dark mb-1 text-black">
-            {{ $label }}
-        </label>
+    <label for="{{ $name }}" class="block text-sm font-semibold text-slate-300 mb-2">
+        {{ $label }}
+    </label>
     @endif
 
     <textarea
         name="{{ $name }}"
         id="{{ $name }}"
         placeholder="{{ $placeholder }}"
-        {{ $attributes->merge(['class' => 'border border-brand-dark rounded-xl w-full px-3 py-2 text-brand-dark focus:outline-none focus:ring-2 focus:ring-brand-yellow transition']) }}
-    >{{ $slot }}</textarea>
+        {{ $attributes->merge(['class' => 'w-full px-4 py-3 rounded-lg bg-slate-700/50 border border-slate-600 text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:border-transparent']) }}>{{ $slot }}</textarea>
 </div>
