@@ -137,6 +137,9 @@
                     <a href="{{ route('customers.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
                         Nieuwe klant
                     </a>
+                     <a href="{{ route('quotes.overview') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                        Offertes beheren
+                    </a>
                 @endif
             </div>
         </div>
