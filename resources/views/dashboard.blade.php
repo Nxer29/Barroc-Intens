@@ -82,10 +82,10 @@
     </div>
 
     {{-- RECENT ACTIVITY + QUICK ACTIONS --}}
-    @if(count($recentActivity) > 0)
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-8">
 
         {{-- RECENT ACTIVITY --}}
+        @if(count($recentActivity) > 0)
         <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 rounded-2xl p-6 border border-slate-700 shadow-xl">
             <h2 class="text-lg font-semibold text-white mb-6">
                 Recente activiteit
@@ -112,15 +112,22 @@
                 @endforeach
             </div>
         </div>
+        @endif
 
         {{-- QUICK ACTIONS --}}
-        <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 rounded-2xl p-6 border border-slate-700 shadow-xl">
+        <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 rounded-2xl p-6 border border-slate-700 shadow-xl {{ count($recentActivity) > 0 ? '' : 'xl:col-span-2' }}">
             <h2 class="text-lg font-semibold text-white mb-6">
                 Snelle acties
             </h2>
 
             <div class="space-y-3">
+                <a href="{{ route('invoices.overview') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                    Facturen overzicht
+                </a>
                 @if(auth()->user()->hasRole('Admin'))
+                    <a href="{{ route('invoices.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                        Nieuwe factuur
+                    </a>
                     <a href="{{ route('appointments.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
                         Nieuwe afspraak
                     </a>
@@ -135,7 +142,6 @@
         </div>
 
     </div>
-    @endif
 
 </div>
 

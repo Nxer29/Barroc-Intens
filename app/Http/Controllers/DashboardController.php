@@ -97,7 +97,7 @@ class DashboardController extends Controller
             ['title' => 'Voorraaditems', 'value' => Inventory::count(), 'route' => 'inventory.index'],
             ['title' => 'Producten', 'value' => Product::count(), 'route' => 'products.index'],
             ['title' => 'Lage voorraad', 'value' => Inventory::where('quantity', '<', 10)->count(), 'route' => 'inventory.index'],
-            ['title' => 'Categorieën', 'value' => Product::distinct('category')->count(), 'route' => 'products.index'],
+            ['title' => 'Categorieën', 'value' => Product::distinct('category_id')->count(), 'route' => 'products.index'],
         ];
 
         $activityData = json_encode([0, 0, 0, 0, 0, 0, 0]);
