@@ -24,10 +24,10 @@
             </p>
 
             @if(!empty($widget['route']))
-                <a href="{{ route($widget['route']) }}"
-                   class="inline-flex items-center gap-2 text-sm font-semibold text-yellow-400 hover:text-yellow-300 transition">
-                    Bekijken <span>→</span>
-                </a>
+            <a href="{{ route($widget['route']) }}"
+                class="inline-flex items-center gap-2 text-sm font-semibold text-yellow-400 hover:text-yellow-300 transition">
+                Bekijken <span>→</span>
+            </a>
             @endif
         </div>
         @endforeach
@@ -38,15 +38,15 @@
 
         {{-- ACTIVITY CHART --}}
         <div class="xl:col-span-2 bg-gradient-to-br from-slate-800/90 to-slate-900 rounded-2xl p-6 border border-slate-700 shadow-xl">
-    <h2 class="text-lg font-semibold text-white mb-4">
-        Activiteit afgelopen week
-    </h2>
+            <h2 class="text-lg font-semibold text-white mb-4">
+                Activiteit afgelopen week
+            </h2>
 
-    <!-- FIX: vaste hoogte -->
-    <div class="relative h-[260px]">
-        <canvas id="activityChart"></canvas>
-    </div>
-</div>
+            <!-- FIX: vaste hoogte -->
+            <div class="relative h-[260px]">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
 
 
         {{-- QUICK STATS --}}
@@ -182,19 +182,30 @@
                     legend: {
                         labels: {
                             color: '#e5e7eb',
-                            font: { weight: '600' }
+                            font: {
+                                weight: '600'
+                            }
                         }
                     }
                 },
                 scales: {
                     x: {
-                        ticks: { color: '#9ca3af' },
-                        grid: { display: false }
+                        ticks: {
+                            color: '#9ca3af'
+                        },
+                        grid: {
+                            display: false
+                        }
                     },
                     y: {
                         beginAtZero: true,
-                        ticks: { color: '#9ca3af', stepSize: 1 },
-                        grid: { color: '#1f2937' }
+                        ticks: {
+                            color: '#9ca3af',
+                            stepSize: 1
+                        },
+                        grid: {
+                            color: '#1f2937'
+                        }
                     }
                 }
             }

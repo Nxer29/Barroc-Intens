@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\Contract;
 use App\Models\Inventory;
 use App\Models\Appointment;
+use App\Models\Invoice;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -78,7 +79,7 @@ class DashboardController extends Controller
     {
         $widgets = [
             ['title' => 'Contracten', 'value' => Contract::count(), 'route' => 'contracts.index'],
-            ['title' => 'Actieve contracten', 'value' => Contract::where('status', 'active')->count(), 'route' => 'contracts.index'],
+            ['title' => 'Facturen', 'value' => Invoice::count(), 'route' => 'invoices.overview'],
             ['title' => 'Klanten', 'value' => Customer::count(), 'route' => 'customers.index'],
             ['title' => 'Afspraken', 'value' => Appointment::count(), 'route' => 'appointments.index'],
         ];
