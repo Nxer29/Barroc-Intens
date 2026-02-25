@@ -121,25 +121,32 @@
             </h2>
 
             <div class="space-y-3">
+                {{-- Planning link voor maintenance accounts --}}
+                @if(auth()->user()->hasRole('maintenance'))
+                <a href="{{ route('calendar.day') }}" class="block p-4 bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-600 hover:to-yellow-500 rounded-xl text-slate-900 font-bold transition shadow-lg">
+                    Mijn Planning
+                </a>
+                @endif
+
                 <a href="{{ route('invoices.overview') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
                     Facturen overzicht
                 </a>
                 @if(auth()->user()->hasRole('Admin'))
-                    <a href="{{ route('invoices.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
-                        Nieuwe factuur
-                    </a>
-                    <a href="{{ route('appointments.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
-                        Nieuwe afspraak
-                    </a>
-                    <a href="{{ route('contracts.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
-                        Nieuw contract
-                    </a>
-                    <a href="{{ route('customers.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
-                        Nieuwe klant
-                    </a>
-                     <a href="{{ route('quotes.overview') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
-                        Offertes beheren
-                    </a>
+                <a href="{{ route('invoices.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                    Nieuwe factuur
+                </a>
+                <a href="{{ route('appointments.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                    Nieuwe afspraak
+                </a>
+                <a href="{{ route('contracts.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                    Nieuw contract
+                </a>
+                <a href="{{ route('customers.create') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                    Nieuwe klant
+                </a>
+                <a href="{{ route('quotes.overview') }}" class="block p-4 bg-slate-700/50 hover:bg-slate-700 rounded-xl text-white transition">
+                    Offertes beheren
+                </a>
                 @endif
             </div>
         </div>

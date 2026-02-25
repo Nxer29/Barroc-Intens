@@ -5,7 +5,7 @@
         </a>
 
         @auth
-        <div class="hidden sm:flex space-x-6">
+        <div class="flex space-x-3 sm:space-x-6 flex-1 justify-center sm:justify-start">
             <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 Dashboard
             </x-nav-link>

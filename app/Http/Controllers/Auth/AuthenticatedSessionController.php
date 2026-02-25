@@ -28,6 +28,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        // Check if user is maintenance - redirect to calendar
+        $user = Auth::user();
+        if ($user && $user->hasRole('maintenance')) {
+            return redirect()->intended(route('calendar.day', absolute: false));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
