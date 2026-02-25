@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\InventoryUIController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AppointmentUIController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
@@ -177,7 +178,22 @@ Route::delete('/appointments/{appointment}', [AppointmentUIController::class, 'd
     ->name('appointments.destroy');
 
 // ============================
-// 🗒️ Facturen (Invoices)
+// � Monteur Kalender (Tablet 8-inch)
+// ============================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/calendar/day', [CalendarController::class, 'day'])
+        ->name('calendar.day');
+
+    Route::get('/calendar/week', [CalendarController::class, 'week'])
+        ->name('calendar.week');
+
+    Route::get('/calendar/appointment/{appointment}', [CalendarController::class, 'appointmentDetails'])
+        ->whereNumber('appointment')
+        ->name('calendar.appointment-details');
+});
+
+// ============================
+// �🗒️ Facturen (Invoices)
 // ============================
 Route::get('/invoices/overview', [App\Http\Controllers\InvoiceOverviewController::class, 'index'])->name('invoices.overview');
 Route::get('/facturen/nieuw', [InvoiceController::class, 'create'])->name('invoices.create');
