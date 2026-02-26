@@ -39,6 +39,7 @@
                 <a href="{{ route('inventory.index') }}" class="nav-link">Voorraad</a>
                 <a href="{{ route('contracts.index') }}" class="nav-link">Contracten</a>
                 <a href="{{ route('invoices.overview') }}" class="nav-link">Facturen</a>
+                <a href="{{ route('contact') }}" class="nav-link">Contact</a>
 
                 @role('Admin')
                 <a href="{{ route('admin-dashboard.index') }}" class="nav-link text-yellow-400 font-semibold">
