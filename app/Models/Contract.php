@@ -16,6 +16,9 @@ class Contract extends Model
         'status',
         'recurring_amount',
         'created_by',
+        'bkr_status',
+        'bkr_status_date',
+        'bkr_note',
     ];
 
     use Auditable;
@@ -23,6 +26,7 @@ class Contract extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'bkr_status_date' => 'date',
         'recurring_amount' => 'decimal:2',
     ];
 
