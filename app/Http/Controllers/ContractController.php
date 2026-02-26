@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\Product;
+use App\Models\AuditLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +38,9 @@ class ContractController extends Controller
             'start_date'       => 'required|date',
             'end_date'         => 'nullable|date|after_or_equal:start_date',
             'status'           => 'nullable|string|max:50',
+            'bkr_status'        => 'nullable|in:not_started,in_progress,approved,rejected',
+            'bkr_status_date'   => 'nullable|date',
+            'bkr_note'          => 'nullable|string',
             'recurring_amount' => 'nullable|numeric|min:0',
             'products'         => 'nullable|array',
             'products.*'       => 'integer|exists:products,id',
@@ -56,6 +60,17 @@ class ContractController extends Controller
             $contract->start_date       = $data['start_date'];
             $contract->end_date         = $data['end_date'] ?? null;
             $contract->status           = $data['status'] ?? null;
+
+            // BKR status (per contract)
+            $contract->bkr_status      = $data['bkr_status'] ?? 'not_started';
+            $contract->bkr_status_date = $data['bkr_status_date'] ?? null;
+            $contract->bkr_note        = $data['bkr_note'] ?? null;
+
+            // Als er een status is gezet maar geen datum, zet hem op vandaag
+            if ($contract->bkr_status !== 'not_started' && empty($contract->bkr_status_date)) {
+                $contract->bkr_status_date = now()->toDateString();
+            }
+
             $contract->recurring_amount = $data['recurring_amount'] ?? null;
             $contract->created_by       = Auth::id();
             $contract->save(); // direct save zorgt dat contract_number echt in DB staat
@@ -86,7 +101,16 @@ class ContractController extends Controller
     public function show(Contract $contract)
     {
         $contract->load(['customer','products']);
-        return view('contracts.show', compact('contract'));
+
+        // Laatste wijzigingen (wie/wanneer) in beeld brengen via audit logs
+        $auditLogs = AuditLog::with('user')
+            ->where('entity', 'Contract')
+            ->where('entity_id', $contract->id)
+            ->orderByDesc('timestamp')
+            ->limit(20)
+            ->get();
+
+        return view('contracts.show', compact('contract', 'auditLogs'));
     }
 
     // Bewerken formulier
@@ -108,6 +132,9 @@ class ContractController extends Controller
             'start_date'        => 'required|date',
             'end_date'          => 'nullable|date|after_or_equal:start_date',
             'status'            => 'nullable|string|max:50',
+            'bkr_status'         => 'nullable|in:not_started,in_progress,approved,rejected',
+            'bkr_status_date'    => 'nullable|date',
+            'bkr_note'           => 'nullable|string',
             'recurring_amount'  => 'nullable|numeric|min:0',
             'products'          => 'nullable|array',
             'products.*'        => 'integer|exists:products,id',
@@ -125,6 +152,18 @@ class ContractController extends Controller
             $contract->start_date       = $data['start_date'];
             $contract->end_date         = $data['end_date'] ?? null;
             $contract->status           = $data['status'] ?? null;
+
+            // BKR status (per contract)
+            $oldBkrStatus = $contract->bkr_status;
+            $contract->bkr_status      = $data['bkr_status'] ?? $contract->bkr_status ?? 'not_started';
+            $contract->bkr_status_date = $data['bkr_status_date'] ?? $contract->bkr_status_date;
+            $contract->bkr_note        = $data['bkr_note'] ?? $contract->bkr_note;
+
+            // Als status verandert en er is geen datum ingevuld, zet hem op vandaag
+            if ($contract->bkr_status !== $oldBkrStatus && empty($data['bkr_status_date'])) {
+                $contract->bkr_status_date = now()->toDateString();
+            }
+
             $contract->recurring_amount = $data['recurring_amount'] ?? null;
             $contract->save();
 

@@ -79,14 +79,57 @@
                     </p>
                 </div>
 
+                {{-- BKR status --}}
+                <div>
+                    <p class="text-gray-400 text-sm uppercase tracking-wider">
+                        BKR-check
+                    </p>
+
+                    @php
+                        $bkrLabels = [
+                            'not_started' => 'Niet gestart',
+                            'in_progress' => 'In behandeling',
+                            'approved' => 'Akkoord',
+                            'rejected' => 'Afgekeurd',
+                        ];
+
+                        $bkrClasses = [
+                            'not_started' => 'bg-slate-700/50 text-slate-300 border-slate-600',
+                            'in_progress' => 'bg-yellow-500/10 text-yellow-400 border-yellow-500/50',
+                            'approved' => 'bg-emerald-500/10 text-emerald-400 border-emerald-500/50',
+                            'rejected' => 'bg-red-500/10 text-red-400 border-red-500/50',
+                        ];
+                    @endphp
+
+                    <div class="mt-3 flex flex-col gap-2">
+                        <span class="inline-flex items-center w-fit px-3 py-1 rounded-full text-sm font-medium border {{ $bkrClasses[$contract->bkr_status] ?? 'bg-slate-700/50 text-slate-300 border-slate-600' }}">
+                            {{ $bkrLabels[$contract->bkr_status] ?? ($contract->bkr_status ?? 'Niet ingesteld') }}
+                        </span>
+
+                        <p class="text-gray-300 text-sm">
+                            Datum:
+                            <span class="text-white">
+                                {{ $contract->bkr_status_date ? $contract->bkr_status_date->format('d-m-Y') : '—' }}
+                            </span>
+                        </p>
+
+                        @if(!empty($contract->bkr_note))
+                            <p class="text-gray-300 text-sm">
+                                Opmerking:
+                                <span class="text-white">{{ $contract->bkr_note }}</span>
+                            </p>
+                        @endif
+                    </div>
+                </div>
+
                 {{-- Einddatum --}}
                 <div>
                     <p class="text-gray-400 text-sm uppercase tracking-wider">
                         Einddatum
                     </p>
                     <p class="text-xl text-white font-medium mt-2">
-                        {{ $contract->end_date 
-                        ? \Carbon\Carbon::parse($contract->end_date)->format('d-m-Y') 
+                        {{ $contract->end_date
+                        ? \Carbon\Carbon::parse($contract->end_date)->format('d-m-Y')
                         : 'Niet ingesteld' }}
                     </p>
                 </div>
@@ -149,6 +192,36 @@
                     {{ $contract->notes }}
                 </p>
 
+            </div>
+            @endif
+
+            {{-- WIJZIGINGEN (AUDIT) --}}
+            @if(isset($auditLogs) && $auditLogs->count())
+            <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700 rounded-2xl p-8 shadow-xl mt-8">
+                <h2 class="text-2xl font-semibold text-white mb-4">
+                    Laatste wijzigingen
+                </h2>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead>
+                            <tr class="text-slate-300 border-b border-slate-700">
+                                <th class="py-2 pr-4">Wanneer</th>
+                                <th class="py-2 pr-4">Wie</th>
+                                <th class="py-2 pr-4">Actie</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($auditLogs as $log)
+                                <tr class="border-b border-slate-800">
+                                    <td class="py-2 pr-4 text-slate-200">{{ $log->timestamp?->format('d-m-Y H:i') }}</td>
+                                    <td class="py-2 pr-4 text-slate-200">{{ $log->user?->name ?? 'Onbekend' }}</td>
+                                    <td class="py-2 pr-4 text-slate-200">{{ $log->action }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             @endif
 
