@@ -119,4 +119,50 @@ class MaintenanceRequestController extends Controller
 
         return view('maintenance.requests.show', compact('maintenanceRequest'));
     }
+
+    /**
+     * Planning - Dag weergave
+     */
+    public function planningDay(Request $request)
+    {
+        $dateStr = $request->query('date', now()->toDateString());
+        $date = \Carbon\Carbon::parse($dateStr);
+
+        $previousDate = $date->clone()->subDay();
+        $nextDate = $date->clone()->addDay();
+
+        // Haal maintenance requests op voor deze dag
+        $requests = MaintenanceRequest::with(['customer', 'product', 'contract'])
+            ->whereDate('scheduled_at', $date->toDateString())
+            ->where('status', '!=', 'closed')
+            ->orderBy('scheduled_at', 'asc')
+            ->get();
+
+        return view('maintenance.planning.day', compact('date', 'previousDate', 'nextDate', 'requests'));
+    }
+
+    /**
+     * Planning - Week weergave
+     */
+    public function planningWeek(Request $request)
+    {
+        $dateStr = $request->query('date', now()->toDateString());
+        $date = \Carbon\Carbon::parse($dateStr);
+
+        // Start van de week (maandag)
+        $weekStart = $date->clone()->startOfWeek();
+        $weekEnd = $date->clone()->endOfWeek();
+
+        $previousWeekStart = $weekStart->clone()->subWeek();
+        $nextWeekStart = $weekStart->clone()->addWeek();
+
+        // Haal maintenance requests op voor deze week
+        $requests = MaintenanceRequest::with(['customer', 'product', 'contract'])
+            ->whereBetween('scheduled_at', [$weekStart, $weekEnd])
+            ->where('status', '!=', 'closed')
+            ->orderBy('scheduled_at', 'asc')
+            ->get();
+
+        return view('maintenance.planning.week', compact('date', 'weekStart', 'weekEnd', 'previousWeekStart', 'nextWeekStart', 'requests'));
+    }
 }

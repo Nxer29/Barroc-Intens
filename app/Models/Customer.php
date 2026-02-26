@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Traits\Auditable;
+
 class Customer extends Model
 {
     protected $fillable = [
@@ -20,6 +22,8 @@ class Customer extends Model
         'source_url',
         'created_by',
     ];
+
+    use Auditable;
 
     /**
      * =========================

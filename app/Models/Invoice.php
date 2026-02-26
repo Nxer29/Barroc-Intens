@@ -7,9 +7,13 @@ use App\Models\Contract;
 use App\Models\Customer;
 use App\Models\InvoiceLine;
 
+use App\Traits\Auditable;
+
 class Invoice extends Model
 {
     public $timestamps = false;
+
+    use Auditable;
 
     protected $fillable = [
         'invoice_number',

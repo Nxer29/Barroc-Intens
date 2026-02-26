@@ -1,15 +1,20 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Auditable;
+
 class Product extends Model
 {
-    protected $fillable=['sku','name','brand','description','category_id','unit_price','price','is_visible_to_customers','stock'];
+    protected $fillable = ['sku', 'name', 'brand', 'description', 'category_id', 'unit_price', 'price', 'is_visible_to_customers', 'stock'];
+
+    use Auditable;
 
     public function category()
     {
-        return $this->belongsTo(ProductCategory::class,'category_id');
+        return $this->belongsTo(ProductCategory::class, 'category_id');
     }
 
     public function inventory()
