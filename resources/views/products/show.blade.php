@@ -19,11 +19,37 @@
         <div class="bg-gradient-to-br from-slate-800/90 to-slate-900 border border-slate-700 rounded-2xl p-8 shadow-xl">
             <div class="md:flex gap-8">
 
+
                 {{-- Afbeelding --}}
                 <div class="md:w-1/3">
-                    <div class="bg-slate-700/50 h-56 flex items-center justify-center rounded-xl border border-slate-600">
-                        <span class="text-slate-400 text-sm">Geen afbeelding</span>
-                    </div>
+                    @php
+                        $firstImage = $product->images->first();
+                    @endphp
+
+                    @if ($firstImage)
+                        <img
+                            src="{{ asset('storage/' . $firstImage->path) }}"
+                            alt="Productfoto van {{ $product->name }}"
+                            class="h-56 w-full object-cover rounded-xl border"
+                        >
+                    @else
+                        <div class="bg-gray-200 h-56 flex items-center justify-center rounded-xl">
+                            <span class="text-gray-500 text-sm">Geen afbeelding</span>
+                        </div>
+                    @endif
+
+                    {{-- Optioneel: thumbnails van alle foto's --}}
+                    @if ($product->images->count() > 1)
+                        <div class="grid grid-cols-3 gap-2 mt-3">
+                            @foreach ($product->images as $img)
+                                <img
+                                    src="{{ asset('storage/' . $img->path) }}"
+                                    alt="Productfoto"
+                                    class="h-20 w-full object-cover rounded-lg border"
+                                >
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 {{-- Product info --}}

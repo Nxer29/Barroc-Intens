@@ -149,6 +149,7 @@ class CalendarController extends Controller
             'status' => $appointment->status,
             'notes' => $appointment->notes,
             'type' => $appointment->type ? $appointment->type->name : 'Onbekend',
+
             'customer' => [
                 'id' => $appointment->customer->id ?? null,
                 'name' => $appointment->customer->company_name ?? 'Onbekende klant',
@@ -156,18 +157,28 @@ class CalendarController extends Controller
                 'contact_email' => $appointment->customer->contact_email ?? '',
                 'contact_phone' => $appointment->customer->contact_phone ?? '',
             ],
+
             'address' => $address ? [
                 'street' => $address->street,
                 'city' => $address->city,
                 'postal_code' => $address->postal_code,
                 'country' => $address->country,
             ] : null,
+
+            // Probleemomschrijving + referentie storingsaanvraag
             'maintenance_request' => $maintenanceRequest ? [
                 'id' => $maintenanceRequest->id,
+                'request_number' => $maintenanceRequest->request_number,
                 'issue_description' => $maintenanceRequest->issue_description,
                 'urgency' => $maintenanceRequest->urgency,
                 'priority' => $maintenanceRequest->priority,
+                'product' => $maintenanceRequest->product ? [
+                    'id' => $maintenanceRequest->product->id,
+                    'name' => $maintenanceRequest->product->name,
+                ] : null,
             ] : null,
+
+            // Contractreferentie + “benodigde spullen” (producten met aantallen)
             'contract' => $activeContract ? [
                 'id' => $activeContract->id,
                 'name' => $activeContract->name,
@@ -177,6 +188,8 @@ class CalendarController extends Controller
                 'products' => $activeContract->products->map(fn($p) => [
                     'id' => $p->id,
                     'name' => $p->name,
+                    'quantity' => (int)($p->pivot->quantity ?? 1),
+                    'unit_price' => $p->pivot->unit_price,
                 ])->values(),
             ] : null,
         ]);
