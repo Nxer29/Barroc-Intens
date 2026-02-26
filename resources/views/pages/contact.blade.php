@@ -28,8 +28,8 @@
                     </div>
                     <div>
                         <h3 class="text-sm font-semibold text-slate-300 mb-1">Adres</h3>
-                        <p class="text-white">Terheijdenseweg 350</p>
-                        <p class="text-white">4826 AA, Breda</p>
+                        <p class="text-white">Nobellelaan 50</p>
+                        <p class="text-white">4826 AA, Bergen Op Zoom</p>
                     </div>
                 </div>
 
