@@ -66,7 +66,7 @@
                     <div>
                         <h3 class="text-sm font-semibold text-slate-300 mb-1">Openingstijden</h3>
                         <p class="text-white">Ma - Vr: 08:00 - 17:00</p>
-                        <p class="text-white">Weekend: Gesloten</p>
+                        <p class="text-white">Za-Zo: Gesloten</p>
                     </div>
                 </div>
             </div>
