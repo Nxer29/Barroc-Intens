@@ -37,7 +37,7 @@ class ProductController extends Controller
     {
         $validated = $this->getArr($request);
 
-        
+
         // Extra validatie voor foto's (multiple)
         $request->validate([
             'photos' => ['required', 'array', 'min:1', 'max:3'],
