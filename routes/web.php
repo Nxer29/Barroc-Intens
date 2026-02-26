@@ -10,6 +10,7 @@ use App\Http\Controllers\InventoryUIController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AppointmentUIController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CustomerNoteController;
@@ -86,7 +87,17 @@ Route::view('/styleguide', 'pages.styleguide')
 
 
 // ============================
-// 👤 Profiel
+// � Contact
+// ============================
+Route::get('/contact', [ContactController::class, 'index'])
+    ->name('contact');
+
+Route::post('/contact', [ContactController::class, 'send'])
+    ->name('contact.send');
+
+
+// ============================
+// �👤 Profiel
 // ============================
 Route::get('/profile', [ProfileController::class, 'edit'])
     ->name('profile.edit');

@@ -3,17 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
-use PHPUnit\Event\DeferringDispatcher;
 
 class ProductController extends Controller
 {
 
 
     public function index(Request $request)
-    {
-        {
-            $query = Product::query();
+    { {
+            $query = Product::with(['category', 'images']);
 
             if ($q = $request->query('q')) {
                 $query->where(function ($qb) use ($q) {
@@ -30,14 +29,31 @@ class ProductController extends Controller
 
     public function create()
     {
-            return view('products.create');
+        $categories = ProductCategory::orderBy('name')->get();
+        return view('products.create', compact('categories'));
     }
 
     public function store(Request $request)
     {
-        $validated = $this->getArr($request);
+        $validated = $request->validate([
+            'sku' => ['nullable', 'string', 'max:255', 'unique:products,sku'],
+            'name' => ['required', 'string', 'max:255'],
+            'brand' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'category_id' => ['required', 'integer', 'exists:product_categories,id'],
+            'unit_price' => ['required', 'numeric', 'min:0'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+        ], [
+            'sku.unique' => 'Deze SKU bestaat al in het systeem.',
+            'category_id.exists' => 'De geselecteerde categorie bestaat niet.',
+            'name.required' => 'Naam is verplicht.',
+            'unit_price.required' => 'Unit prijs is verplicht.',
+            'price.required' => 'Prijs is verplicht.',
+            'stock.required' => 'Voorraad is verplicht.',
+        ]);
 
-        
+
         // Extra validatie voor foto's (multiple)
         $request->validate([
             'photos' => ['required', 'array', 'min:1', 'max:3'],
@@ -47,6 +63,12 @@ class ProductController extends Controller
                 'mimetypes:image/jpeg,image/png,image/webp',
                 'max:4096',
             ],
+        ], [
+            'photos.required' => 'Minimaal één foto is verplicht.',
+            'photos.min' => 'Upload minimaal één foto.',
+            'photos.max' => 'Je kunt maximaal 3 foto\'s uploaden.',
+            'photos.*.mimetypes' => 'Alleen JPG, PNG en WebP bestanden zijn toegestaan.',
+            'photos.*.max' => 'Elke foto mag maximaal 4MB groot zijn.',
         ]);
 
         $validated['is_visible_to_customers'] = $request->boolean('is_visible_to_customers');
@@ -76,12 +98,27 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        $categories = ProductCategory::orderBy('name')->get();
+        return view('products.edit', compact('product', 'categories'));
     }
 
     public function update(Request $request, Product $product)
     {
-        $data = $this->getArr($request);
+        $data = $request->validate([
+            'sku' => ['nullable', 'string', 'max:255', 'unique:products,sku,' . $product->id],
+            'name' => ['required', 'string', 'max:255'],
+            'brand' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
+            'category_id' => ['required', 'integer', 'exists:product_categories,id'],
+            'unit_price' => ['required', 'numeric', 'min:0'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+        ], [
+            'sku.unique' => 'Deze SKU bestaat al in het systeem.',
+            'category_id.exists' => 'De geselecteerde categorie bestaat niet.',
+            'name.required' => 'Naam is verplicht.',
+        ]);
+
         $data['is_visible_to_customers'] = $request->boolean('is_visible_to_customers');
 
         $product->update($data);
