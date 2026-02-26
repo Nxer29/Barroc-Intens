@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Auditable;
+
 class Appointment extends Model
 {
     protected $fillable = [
@@ -14,9 +16,11 @@ class Appointment extends Model
         'status',
         'notes',
     ];
-protected $casts = [
-    'scheduled_at' => 'datetime',
-];
+    protected $casts = [
+        'scheduled_at' => 'datetime',
+    ];
+
+    use Auditable;
 
     public function customer()
     {

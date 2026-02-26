@@ -18,6 +18,7 @@ use App\Http\Controllers\InvoiceController;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\AuditLogController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,7 @@ Route::group(['middleware' => ['role:Admin']], function () {
     Route::get('/admin-dashboard/users', [AdminController::class, 'users'])->name('admin-dashboard.users');
     Route::resource('admin-dashboard', AdminController::class);
     Route::post('/admin/users/roles/{id}', [AdminController::class, 'toggleRole']);
+    Route::get('/auditlogs', [AuditLogController::class, 'index'])->name('auditlogs.index');
 });
 // ============================
 // 🏠 Dashboard
@@ -241,6 +243,14 @@ Route::patch(
     [MaintenanceRequestController::class, 'updateStatus']
 )->name('maintenance.requests.status');
 
+// Planning - Dag en Week views
+Route::middleware(['auth'])->group(function () {
+    Route::get('/maintenance/planning/day', [MaintenanceRequestController::class, 'planningDay'])
+        ->name('maintenance.planning.day');
+
+    Route::get('/maintenance/planning/week', [MaintenanceRequestController::class, 'planningWeek'])
+        ->name('maintenance.planning.week');
+});
 
 Route::put('customers/{customer}/notes/{note}', [NotesController::class, 'update'])
     ->name('customers.notes.update');

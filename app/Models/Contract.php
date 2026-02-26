@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use App\Traits\Auditable;
+
 class Contract extends Model
 {
     protected $fillable = [
@@ -15,6 +17,8 @@ class Contract extends Model
         'recurring_amount',
         'created_by',
     ];
+
+    use Auditable;
 
     protected $casts = [
         'start_date' => 'date',
@@ -30,8 +34,8 @@ class Contract extends Model
     public function products()
     {
         return $this->belongsToMany(\App\Models\Product::class, 'contract_product')
-                    ->withPivot(['quantity','unit_price'])
-                    ->withTimestamps();
+            ->withPivot(['quantity', 'unit_price'])
+            ->withTimestamps();
     }
 
     public function creator()
