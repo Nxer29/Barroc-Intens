@@ -89,12 +89,17 @@ class CalendarController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        // Load relations
+        // Load relations including work order and materials
         $appointment->load([
             'customer.contracts.products',
             'type',
             'technician'
         ]);
+
+        // Load WorkOrder if exists
+        $workOrder = \App\Models\WorkOrder::where('appointment_id', $appointment->id)
+            ->with(['materials.product'])
+            ->first();
 
         // Find related maintenance request
         $maintenanceRequest = MaintenanceRequest::with(['product', 'contract.products'])
@@ -191,6 +196,20 @@ class CalendarController extends Controller
                     'quantity' => (int)($p->pivot->quantity ?? 1),
                     'unit_price' => $p->pivot->unit_price,
                 ])->values(),
+            ] : null,
+
+            'materials_used' => $workOrder ? $workOrder->materials->map(fn($m) => [
+                'id' => $m->id,
+                'product_id' => $m->product_id,
+                'product_name' => $m->product?->name ?? 'Onbekend product',
+                'quantity' => $m->quantity,
+                'unit_price' => $m->unit_price,
+            ])->values() : null,
+
+            'work_order' => $workOrder ? [
+                'id' => $workOrder->id,
+                'notes' => $workOrder->notes,
+                'performed_by' => \App\Models\User::find($workOrder->performed_by)?->name,
             ] : null,
         ]);
     }

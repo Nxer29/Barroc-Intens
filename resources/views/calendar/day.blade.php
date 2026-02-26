@@ -217,6 +217,12 @@
                     </div>
                 </div>
 
+                {{-- Materials Used --}}
+                <div id="materialsUsedSection" class="hidden bg-slate-700/40 rounded-2xl p-5 sm:p-6 border border-slate-600 border-green-900/50">
+                    <h3 class="text-xs text-gray-300 uppercase tracking-wide mb-3 font-bold">✓ Materialen gebruikt</h3>
+                    <div id="materialsUsedList" class="space-y-2"></div>
+                </div>
+
                 {{-- Notes --}}
                 <div id="notesSection" class="bg-slate-700/40 rounded-2xl p-5 sm:p-6 border border-slate-600">
                     <h3 class="text-xs text-gray-300 uppercase tracking-wide mb-3 font-bold">Opmerkingen</h3>
@@ -348,9 +354,9 @@
         if (data.maintenance_request && data.maintenance_request.issue_description) {
             document.getElementById('modalIssue').textContent = data.maintenance_request.issue_description;
 
-            const ref = data.maintenance_request.request_number
-                ? `Storingsaanvraag: #${data.maintenance_request.request_number}`
-                : (data.maintenance_request.id ? `Storingsaanvraag: #${data.maintenance_request.id}` : '');
+            const ref = data.maintenance_request.request_number ?
+                `Storingsaanvraag: #${data.maintenance_request.request_number}` :
+                (data.maintenance_request.id ? `Storingsaanvraag: #${data.maintenance_request.id}` : '');
 
             maintenanceRefEl.textContent = ref;
         } else if (data.notes) {
@@ -369,37 +375,66 @@
 
             // Products (met aantallen)
             const productsList = document.getElementById('productsList');
-            productsList.innerHTML = '';
+            if (productsList) {
+                productsList.innerHTML = '';
 
-            if (data.contract.products && data.contract.products.length > 0) {
-                data.contract.products.forEach(product => {
-                    const qty = product.quantity ? ` × ${product.quantity}` : '';
-                    const productEl = document.createElement('div');
-                    productEl.className = 'text-xs sm:text-sm text-gray-200 bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-600 flex items-center justify-between gap-3';
-                    productEl.innerHTML = `
-                        <span>${escapeHtml(product.name)}</span>
-                        <span class="text-gray-300 font-bold">${escapeHtml(qty)}</span>
-                    `;
-                    productsList.appendChild(productEl);
-                });
-            } else {
-                productsList.innerHTML = '<p class="text-xs text-gray-400">Geen contractproducten</p>';
+                if (data.contract.products && data.contract.products.length > 0) {
+                    data.contract.products.forEach(product => {
+                        const qty = product.quantity ? ` × ${product.quantity}` : '';
+                        const productEl = document.createElement('div');
+                        productEl.className = 'text-xs sm:text-sm text-gray-200 bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-600 flex items-center justify-between gap-3';
+                        productEl.innerHTML = `
+                            <span>${escapeHtml(product.name)}</span>
+                            <span class="text-gray-300 font-bold">${escapeHtml(qty)}</span>
+                        `;
+                        productsList.appendChild(productEl);
+                    });
+                } else {
+                    productsList.innerHTML = '<p class="text-xs text-gray-400">Geen contractproducten</p>';
+                }
             }
 
             // Betreft product (uit storingsaanvraag)
+            const maintenanceProductDiv = document.getElementById('maintenanceProductDiv');
             if (data.maintenance_request && data.maintenance_request.product && data.maintenance_request.product.name) {
-                maintenanceProductDiv.classList.remove('hidden');
-                document.getElementById('maintenanceProduct').textContent = data.maintenance_request.product.name;
+                if (maintenanceProductDiv) maintenanceProductDiv.classList.remove('hidden');
+                const maintenanceProduct = document.getElementById('maintenanceProduct');
+                if (maintenanceProduct) maintenanceProduct.textContent = data.maintenance_request.product.name;
             }
         } else {
-            contractSection.style.display = 'none';
+            const contractSection = document.getElementById('contractSection');
+            if (contractSection) contractSection.style.display = 'none';
+        }
+
+        // Materials Used
+        const materialsUsedSection = document.getElementById('materialsUsedSection');
+        if (data.materials_used && data.materials_used.length > 0) {
+            if (materialsUsedSection) materialsUsedSection.style.display = 'block';
+            const materialsList = document.getElementById('materialsUsedList');
+            if (materialsList) {
+                materialsList.innerHTML = '';
+                data.materials_used.forEach(material => {
+                    const qty = material.quantity ? ` × ${material.quantity}` : '';
+                    const materialEl = document.createElement('div');
+                    materialEl.className = 'text-xs sm:text-sm text-gray-200 bg-green-900/20 rounded-lg px-3 py-2 border border-green-900/50 flex items-center justify-between gap-3';
+                    materialEl.innerHTML = `
+                        <span>${escapeHtml(material.product_name)}</span>
+                        <span class="text-gray-300 font-bold">${escapeHtml(qty)}</span>
+                    `;
+                    materialsList.appendChild(materialEl);
+                });
+            }
+        } else {
+            if (materialsUsedSection) materialsUsedSection.style.display = 'none';
         }
 
         // Notes
+        const notesSection = document.getElementById('notesSection');
         if (data.notes) {
             document.getElementById('modalNotes').textContent = data.notes;
+            if (notesSection) notesSection.style.display = 'block';
         } else {
-            notesSection.style.display = 'none';
+            if (notesSection) notesSection.style.display = 'none';
         }
 
         // Edit link

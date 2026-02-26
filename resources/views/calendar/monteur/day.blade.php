@@ -207,6 +207,12 @@
                     </div>
                 </div>
 
+                {{-- Materials Used --}}
+                <div id="materialsUsedSection" class="hidden bg-slate-700/40 rounded-2xl p-5 sm:p-6 border border-slate-600 border-green-900/50">
+                    <h3 class="text-xs text-gray-300 uppercase tracking-wide mb-3 font-bold">✓ Materialen gebruikt</h3>
+                    <div id="materialsUsedList" class="space-y-2"></div>
+                </div>
+
                 {{-- Notes --}}
                 <div id="notesSection" class="bg-slate-700/40 rounded-2xl p-5 sm:p-6 border border-slate-600">
                     <h3 class="text-xs text-gray-300 uppercase tracking-wide mb-3 font-bold">Opmerkingen</h3>
@@ -219,6 +225,10 @@
                         class="flex-1 bg-slate-700 hover:bg-slate-600 text-white font-bold py-4 px-4 rounded-xl transition text-base sm:text-lg">
                         Sluiten
                     </button>
+                    <a id="detailLink" href="#"
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-4 rounded-xl transition text-base sm:text-lg text-center">
+                        Volledige weergave
+                    </a>
                     <a id="editLink" href="#"
                         class="flex-1 bg-yellow-400 hover:bg-yellow-300 text-slate-900 font-bold py-4 px-4 rounded-xl transition text-base sm:text-lg text-center">
                         Bewerk
@@ -307,26 +317,33 @@
         document.getElementById('modalContactPhone').textContent = data.customer.contact_phone || '';
 
         // Address
+        const addressSection = document.getElementById('addressSection');
         if (data.address) {
             document.getElementById('modalStreet').textContent = data.address.street || 'Geen straat';
             document.getElementById('modalPostalCity').textContent =
                 (data.address.postal_code ? data.address.postal_code + ' ' : '') + (data.address.city || '');
             document.getElementById('modalCountry').textContent = data.address.country || '';
+            if (addressSection) addressSection.style.display = 'block';
         } else {
-            document.getElementById('addressSection').style.display = 'none';
+            if (addressSection) addressSection.style.display = 'none';
         }
 
         // Issue/Problem
+        const issueSection = document.getElementById('issueSection');
         if (data.maintenance_request && data.maintenance_request.issue_description) {
             document.getElementById('modalIssue').textContent = data.maintenance_request.issue_description;
+            if (issueSection) issueSection.style.display = 'block';
         } else if (data.notes) {
             document.getElementById('modalIssue').textContent = data.notes;
+            if (issueSection) issueSection.style.display = 'block';
         } else {
-            document.getElementById('issueSection').style.display = 'none';
+            if (issueSection) issueSection.style.display = 'none';
         }
 
         // Contract
+        const contractSection = document.getElementById('contractSection');
         if (data.contract) {
+            if (contractSection) contractSection.style.display = 'block';
             document.getElementById('modalContractName').textContent = data.contract.name;
             document.getElementById('modalContractStatus').textContent = data.contract.status;
             document.getElementById('modalContractStart').textContent = formatDate(data.contract.start_date);
@@ -334,30 +351,55 @@
 
             // Products
             const productsList = document.getElementById('productsList');
-            productsList.innerHTML = '';
-            if (data.contract.products && data.contract.products.length > 0) {
-                data.contract.products.forEach(product => {
-                    const productEl = document.createElement('div');
-                    productEl.className = 'text-xs sm:text-sm text-gray-200 bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-600';
-                    productEl.textContent = product.name;
-                    productsList.appendChild(productEl);
-                });
-            } else {
-                productsList.innerHTML = '<p class="text-xs text-gray-400">Geen producten</p>';
+            if (productsList) {
+                productsList.innerHTML = '';
+                if (data.contract.products && data.contract.products.length > 0) {
+                    data.contract.products.forEach(product => {
+                        const productEl = document.createElement('div');
+                        productEl.className = 'text-xs sm:text-sm text-gray-200 bg-slate-800/50 rounded-lg px-3 py-2 border border-slate-600';
+                        productEl.textContent = `${product.name}${product.quantity > 1 ? ` (${product.quantity}x)` : ''}`;
+                        productsList.appendChild(productEl);
+                    });
+                } else {
+                    productsList.innerHTML = '<p class="text-xs text-gray-400">Geen producten</p>';
+                }
             }
         } else {
-            document.getElementById('contractSection').style.display = 'none';
+            if (contractSection) contractSection.style.display = 'none';
+        }
+
+        // Materials Used
+        const materialsUsedSection = document.getElementById('materialsUsedSection');
+        if (data.materials_used && data.materials_used.length > 0) {
+            if (materialsUsedSection) materialsUsedSection.style.display = 'block';
+            const materialsList = document.getElementById('materialsUsedList');
+            if (materialsList) {
+                materialsList.innerHTML = '';
+                data.materials_used.forEach(material => {
+                    const materialEl = document.createElement('div');
+                    materialEl.className = 'text-xs sm:text-sm text-gray-200 bg-green-900/20 rounded-lg px-3 py-2 border border-green-900/50';
+                    materialEl.textContent = `${material.product_name}${material.quantity > 1 ? ` (${material.quantity}x)` : ''}`;
+                    materialsList.appendChild(materialEl);
+                });
+            }
+        } else {
+            if (materialsUsedSection) materialsUsedSection.style.display = 'none';
         }
 
         // Notes
+        const notesSection = document.getElementById('notesSection');
         if (data.notes) {
             document.getElementById('modalNotes').textContent = data.notes;
+            if (notesSection) notesSection.style.display = 'block';
         } else {
-            document.getElementById('notesSection').style.display = 'none';
+            if (notesSection) notesSection.style.display = 'none';
         }
 
-        // Edit link
-        document.getElementById('editLink').href = `/appointments/${data.id}/edit`;
+        // Detail & Edit links
+        const detailLink = document.getElementById('detailLink');
+        const editLink = document.getElementById('editLink');
+        if (detailLink) detailLink.href = `/appointments/${data.id}`;
+        if (editLink) editLink.href = `/appointments/${data.id}/edit`;
     }
 
     function formatDate(dateString) {
