@@ -62,6 +62,10 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $Admin->assignRole('Admin');
+        $finance->assignRole('finance');
+        $Sales->assignRole('sales');
+        $Inkoop->assignRole('inkoop');
+        $Maintenance->assignRole('maintenance');
     }
 }
 
